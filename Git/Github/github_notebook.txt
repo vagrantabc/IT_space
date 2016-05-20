@@ -1,0 +1,49 @@
+https://github.com/
+
+github ‘get started’学习笔记
+Hello world 10分钟教材
+
+1. github:代码托管、版本控制平台；
+2. repositories, branches, commits, and Pull Requests（把fork分支的变更合入主干）;
+3. 创建repository:一个repository组织一个项目，repository可以包含任何文件；
+4. 一般有一个readme，说明本项目，还有个license文件；
+5. 邮箱验证-》New repository-》repository name: "IT_space" public(private要收费)-》Create repository
+6. 创建一个分支
+7. 分支：在某一时刻工作于repository的不同版本的方法；
+8. 默认分支是master（产品分支），其它分支用于编辑，测试，再提交master;
+9. pull:拉；
+10. 创建分支：进入IT_space项目-》拉开branch: master下拉菜单-》分支名：github_notebook-》点击‘创建分支’-》完成；
+11. 编辑与提交
+12. 在分支视图中，保存一个变化叫commit. 可以写一个提交原因消息。
+13. 点击readme.md文件，双击笔图标可编辑文档-》commit changes.-》变化保存到分支；
+14. 打开一个pull请求：协作的核心，你提出一个变更，其它人审核变化，同意了就合并他们的分支。
+15. pull请求以红，绿显示差异；
+16. 创建pull请求： pull请求tab页-》New pull request-》选择compare的分支，会出现compare视图-》Create Pull Request-》Create pull request
+17. merge pull请求：Merge pull request按钮-> confirm merge按钮-》Delete branch按钮-》完成.
+18. 无法完成文件上传。还得使用本地客户端。
+19. 结论：不好用
+
+安装桌面github客户端：
+1. 下载：https://desktop.github.com/
+2. 文件上传支持：PNG, GIF, JPG, DOCX, PPTX, XLSX, TXT, PDF, or ZIP文件类型；
+3. 使用git gui，把help->show SSH key的密码填写网站的setting中-> 把网站的ssh url写入clone的源地址。
+4. 修改本地文件-》rescan->stage changed->commit,要注释-》push.
+5. 结论：不好用
+
+安装tortoisegit客户端：
+1. 下载： https://tortoisegit.org/download/  ，下载后得到TortoiseGit-2.1.0.0-64bit.msi;
+2. 安装到本地；
+3. tortoisegit菜单-》PuTTY key gen-> Generate按钮，鼠标滑动后生成public key.
+4. 把public key考到github帐户的设置中；
+5. 设置key passphrase密码:vagrantabc，保存private key文件；
+6. 右键-》TortoiseGit -> settings->Git ->remote，填写remote名称，ssh git地址，导入private key文件；
+7. 右键-》git clone，
+8. 修改文件；
+9. commit, Git Sync..., push
+10. 帮助材料：TortoiseGit->help.
+11. 结论：用好:)
+
+空间：Github上的帐户免费空间为：300M
+
+
+
