@@ -1,0 +1,99 @@
+http://it-ebooks.info/book/3899/
+《AngularJS Essentials.pdf》：本书为angularjs的入门级教材；
+前言：
+1. Google Web Toolkit：GWT，可构建web应用，但开发效率低，代码多；
+2. 可以使用angularjs和springMVC结合;
+3. 测试工具：Jasmine  打包发布工具：Grunt 依赖管理：bower；
+4. 开发工具：sublime text，Aptana，WebStorm；
+5. 开发工具：sublime text2, 2.0.2;
+6. sublime text2的license号如下：
+----- BEGIN LICENSE -----
+
+Andrew Weber
+
+Single User License
+
+EA7E-855605
+
+813A03DD 5E4AD9E6 6C0EEB94 BC99798F
+
+942194A6 02396E98 E62C9979 4BB979FE
+
+91424C9D A45400BF F6747D88 2FB88078
+
+90F5CC94 1CDC92DC 8457107A F151657B
+
+1D22E383 A997F016 42397640 33F41CFC
+
+E1D0AE85 A0BBD039 0E9C8D55 E1B89D5D
+
+5CDB7036 E56DE1C0 EFCC0840 650CD3A6
+
+B98FC99C 8FAC73EE D2B95564 DF450523
+
+------ END LICENSE ------
+
+
+chapter 1. 开发angularjs
+1. Common Gateway Interface (CGI): 使得显示服务器端生成的动态内容成为可能；
+2. Flash and Silverlight：使得BS可以和CS竞争用户体验，但是为私有插件，免费但不开源；
+
+Introduction to AngularJS
+1. 起于2009年，发明者Misko Hevery，意指html中的<>，为<>写的js；
+2. 申明式编程 vs 命令式编程，angularjs属于前者；
+
+Architectural concepts
+1. angularjs适用于Model-View-Whatever (MVW)；
+2. 涉及组件：view（模板template）,controller,model,service,directive,filter等；
+3. view:指html模板；
+4. 指令directive：给html提供扩展，扩大html词汇，如迭代和计算表达式的能力，通常是一些ng-*的属性，用于html；
+5. 控制器controller: 一开始所有的逻辑都由controller实现，后来把业务逻辑转给了service等组件；
+6. scope: 用于连接view和controller，用于交换model的信息；
+7. model: JOPO对象；
+8. 在html的某个元素中指定ng-controller=【value】，即指定了某个函数对象，该html元素内可以使用这个函数对象的属性，用ng-model或$scope绑定，使用其它ng属性调用，或使用{{}}计算表达式；
+
+如何搭建一个agularjs的应用架构
+1. 导入angularjs;
+2. 调用angularjs的module函数，给出模块名和依赖，创建一个应用模块；
+3. 在应用的html的最外层，使用ng-app=‘模块名’，以完成angularjs的初始化过程；
+4. angularjs下载资源：http://www.bootcdn.cn/angular.js/1.5.5/
+5. 格式化：全选，sublime-》edit->line->reindent;
+
+如何组织代码，有四种方式
+1. 内联式：除了angularjs，其它的全部在index.html中，适用于一次性的原型开发，一般不用；
+2. 模板式：小型app适用，app下是index.html，其它按html/css/js/lib分类，js下面每种组件只有一个文件，如app.js, directives.js, controllers.js；
+3. 特定风格：基于模板式再拆分js到单个文件；
+4. 领域式：app下面是领域目录，下面再是html/css/js分层；
+
+chapter 2: 使用指令创建可重用的组件
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
