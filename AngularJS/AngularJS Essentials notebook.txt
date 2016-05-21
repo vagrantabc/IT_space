@@ -50,7 +50,8 @@ Architectural concepts
 5. 控制器controller: 一开始所有的逻辑都由controller实现，后来把业务逻辑转给了service等组件；
 6. scope: 用于连接view和controller，用于交换model的信息；
 7. model: JOPO对象；
-8. 在html的某个元素中指定ng-controller=【value】，即指定了某个函数对象，该html元素内可以使用这个函数对象的属性，用ng-model或$scope绑定，使用其它ng属性调用，或使用{{}}计算表达式；
+8. 在html的某个元素中指定ng-controller=【value】，即指定了某个函数对象，该html元素内可以使用这个函数对象的属性，
+   用ng-model或$scope绑定，使用其它ng属性调用，或使用{{}}计算表达式；
 
 如何搭建一个agularjs的应用架构
 1. 导入angularjs;
@@ -61,7 +62,8 @@ Architectural concepts
 
 如何组织代码，有四种方式
 1. 内联式：除了angularjs，其它的全部在index.html中，适用于一次性的原型开发，一般不用；
-2. 模板式：小型app适用，app下是index.html，其它按html/css/js/lib分类，js下面每种组件只有一个文件，如app.js, directives.js, controllers.js；
+2. 模板式：小型app适用，app下是index.html，其它按html/css/js/lib分类，js下面每种组件只有一个文件，
+   如app.js, directives.js, controllers.js；
 3. 特定风格：基于模板式再拆分js到单个文件；
 4. 领域式：app下面是领域目录，下面再是html/css/js分层；
 
