@@ -42,6 +42,7 @@ Hello world 10分钟教材
 9. commit, Git Sync..., push
 10. 帮助材料：TortoiseGit->help.
 11. 结论：用好:)
+12. append: 32bit版本在private key的导入地方略有差异。
 
 空间：Github上的帐户免费空间为：300M
 
