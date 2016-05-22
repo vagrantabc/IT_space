@@ -1,4 +1,5 @@
 http://it-ebooks.info/book/3899/
+所有angular学习官方维护资源：https://github.com/jmcunningham/AngularJS-Learning
 《AngularJS Essentials.pdf》：本书为angularjs的入门级教材；
 前言：
 1. Google Web Toolkit：GWT，可构建web应用，但开发效率低，代码多；
@@ -95,7 +96,37 @@ parking.controller("parkingCtrl", function ($scope) { });
 13. ngBind指令：用于span元素，用表达式的值代替span元素的内容，等同于{{}};
 14. ngBind vs {{}}: {{}}少写代码，ngBind用于属性，在表达式未编译时不会显示在UI；
 15. ngBindHtml指令：要依赖$sce服务和angular-sanitize.js，以避免XSS攻击，本处略；
-16. ngRepeat指令：迭代数组和对象集，
+16. ngRepeat指令：迭代数组和对象集，表行、list元素，select；
+17. 迭代表达式用法一：variable in array
+<tr ng-repeat="car in cars">
+<td><span ng-bind="car.plate"></span></td>
+<td><span ng-bind="car.entrance"></span></td>
+</tr>
+18. 迭代表达式用法二：(key, value) in object
+$index、$first、$last、$middle、$even、$odd
+19. ngModel指令：绑input/select/textarea元素到当前scope的一个属性；
+20. ngModel的有对象用法和boolean用法；
+21. ngClick指令和其它事件指令：绑定一个定制行为到某个事件；
+<button ng-click="park(car)">Park</button>
+$scope.park = function (car) {...}
+其它事件指令：ngBlur, ngChange, ngCopy, ngCut, ngDblClick, ngFocus, ngKeyPress, ngKeyDown,
+ngKeyUp, ngMousedown, ngMouseenter, ngMouseleave, ngMousemove, ngMouseover,
+ngMouseup, and ngPaste.
+22. ngDisable指令：其于bool值使其元素去活；
+23. ngClass指令：
+24. ngOptions指令：迭代哪个集合，每个元素的内容，本次的显示方式；
+25. ngStyle指令
+26. ngShow and ngHide
+27. ngIf指令：用途比ngShow广，阻止渲染某个元素
+28. ngInclude指令：包含外部的html片断，是重要的重用指令；
+<div ng-include="'menu.html'"></div>
+
+自定义指令：
+1. 用法：创建指令定久对象，注册到模块；
+2. 指定配置属性包括：template, templateUrl, replace, restrict,scope, 和 transclude；
+3. 
+
+
 
 
 
