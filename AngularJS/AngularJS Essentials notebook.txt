@@ -68,6 +68,37 @@ Architectural concepts
 4. 领域式：app下面是领域目录，下面再是html/css/js分层；
 
 chapter 2: 使用指令创建可重用的组件
+1. Document Object Model (DOM) API:用于浏览器的渲染过程；
+2. 服务器response->浏览器构建DOM树->AngularJS compiler遍历DOM树，查找directive;
+
+What is a directive?
+1. 指令：html词汇的扩展，可创建新的行为。作用：创建可重用的组件，或新的组件；
+2. 指令可用于html的属性，元素，类或注释，使用小写字母；
+3. 指令的多种表现形式，如ngModel指令，在html中有如下使用方式：
+ng-model, 
+data-ng-model, 
+x-ng-model，
+ng:model, 
+ng_model
+4. angularjs有一套内置指令；
+5. ngApp指令：定义App的根，通常用于html或body元素，用于启动angularjs框架；
+6. <html ng-app>，无参数，以自动模型启动；
+7. 用法：<html ng-app="parking"> ...var parking = angular.module("parking", []);
+   给出模块名参数，并定义模块变量，以定义其它指令绑定的进入点，推荐；
+8. 一个html文档只能自动启动一个ngApp指令，如有多个ngApp，其它的需要手动启动；
+9. ngController指令：绑定控制器到视图，共享同一个scope；
+10. 用法一：
+parking.controller("parkingCtrl", function ($scope) { });
+<body ng-controller="parkingCtrl">
+11. 用法二：在单页应用中使用$route服务，本处略；
+12. html元素可以嵌套ngcontroller，内部的控制器会继承和重写（override）外部的控制器；
+13. ngBind指令：用于span元素，用表达式的值代替span元素的内容，等同于{{}};
+14. ngBind vs {{}}: {{}}少写代码，ngBind用于属性，在表达式未编译时不会显示在UI；
+15. ngBindHtml指令：要依赖$sce服务和angular-sanitize.js，以避免XSS攻击，本处略；
+16. ngRepeat指令：迭代数组和对象集，
+
+
+
 
 
 
