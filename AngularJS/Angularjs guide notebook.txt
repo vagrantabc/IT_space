@@ -1,0 +1,24 @@
+下面的页面包括了所有与该版本相关的官方维护资源：
+https://code.angularjs.org/1.5.5/docs/guide
+
+介绍
+什么是Angular?
+1. library：你的代码主导；
+2. frameworks：框架主导；
+3. angularjs两者都不属于；
+一个完整的客户端解决方案
+1. angularjs适合于CRUD的web app.
+2. 游戏类和GUI编辑器大量操作DOM，使用jquery更好些，不适合angularjs.
+angulajs之禅
+1. angularjs是申明式代码，不是命令式代码；
+2. 解耦DOM操作与业务逻辑；
+3. 代码结构不好，就不好测试，重视可测试性；
+4. 解耦客户端代码和服务器端代码；
+5. 框架支持设计UI，开发业务，测试；
+angularjs的好处：
+1. 去掉了注册回调的脚手架代码，更简洁；
+2. 不再经常操作底层的DOM；
+3. 数据从服务器到DOM对象到UI更加流畅；
+4. 启动，初始化简单；
+
+概念总览：
