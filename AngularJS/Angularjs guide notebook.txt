@@ -91,6 +91,178 @@ chapter 4 控制器
 8. 在最外层的controller之外，是root scope；
 9. 控制器的测试：参见UT（略）
 
+chapter 5 服务
+1. 服务对象是使用DI包绕在一起的可取代对象，可以跨app共享代码；
+2. 懒加载：只有有依赖时才加载服务；
+3. 单例：一个组件对服务有依赖时，通过服务工厂得到对这个服务对象的一个引用；
+4. 内置服务以$开头；
+5. 控制器、filter、服务、指令都可以依赖服务对象；
+6. 使用module.factory("服务名"，【依赖..., 服务工厂函数】)，服务工厂函数返回函数或对象；
+7. 解释6：注册服务名，服务工厂函数；
+8. 依赖申明的顺序与工厂函数的顺序一致；
+9. 使用$provider去注册一个服务，常用于UT，格式如下：
+   angular.module('myModule', []).config(['$provide', function($provide) { ｝
+10. UT： Jasmine spy (mock) 略
+
+chapter 6 scope对象
+1. scope: 是应用模型的对象引用，是表达式的执行上下文。多层scope模拟了DOM的层级结构，可以watch表达式，传播事件；
+2. 特点：
+   a. 提供$watch服务，观察模型变化；
+   b. 提供$apply服务，传播事件直达视图层；
+3. 子scoope: 继承父scope；
+4. 孤scope: (见directive chapter 13)；
+5. 表达式依赖一个具体的scope才有意义；
+scope是数据模型
+1. 在模板链接阶段，指令会在scope上设一个watch，如果scope值有变化，watch就会知会指令，到DOM上去渲染更新的值；
+2. 控制器和指令都有指向scope的引用，但控制器和指令相互之间没有引用，控制器对视图不可知；
+3. 当scope属性绑定到input组件时，组件值变化时，scope属性会自动更新；
+4. scope是视图数据的唯一来源；
+scope的层级结构：
+1. 每个app只有一个根scope，但有若干个子scope；
+2. 应用可以有多个scope，一些指令也会创建新的scope，有层级关系；
+3. 最终，scope会形成一棵树，与DOM树并存；
+4. 子scope原型继承父scope，直到root scope;
+从DOM中获取scope
+1. ng-app定义了root scope;
+2. 右击元素-》检查-》console-> angular.element($0).scope() 或 $scope
+scope的事件传播
+1. scope的事件传播类似于DOM事件，向下传给子$broadcast('MyEvent')或向上$emit('MyEvent')传给父；
+scope的生命周期
+1. $injector启动应用，创建root scope，链接模板，指令会生成子scope；
+2. 在链接模板时，指令把watch注册到scope；
+3. scope.$apply()观察模型的变化（对开发者隐藏）； 注：除非实现定制的事件回调或第三方库回调，才会写scope.$apply()
+   同步：controller，异步： $http, $timeout or $interval
+4. $apply之后进入$digest阶段，从根scope开始，到子scope都遍历调用$digest服务;
+   在$digest服务中，通过watch查检model变化（脏检查），若有，调用watch listener;
+5. 子scoope不再被需要，它的创建者调用 scope.$destroy()销毁对象，中止$digetst传播,回收内存；
+scope与指令
+1. 编译阶段，编译器基于DOM模板匹配指令，指令两类；
+2. 观察式指令，如{{}}，使用 $watch()的监听器，表达式变化之后，它们被通知；
+3. 监听式指令，如ng-click注册到DOM的监听器；点击-》触发监听-》$apply回调-》修改model-》watch-》视图; 外部事件
+创建scope的指令
+1. 查看任一DOM元素的scope:  angular.element(aDomElement).scope();
+2. ng-controller 和 ng-repeat会创建子scope;
+3. 其它元素不创建scope;
+控制器与scope:
+1. 控制器通过scope给模板暴露方法；
+2. 控制器定义改变模型（即scope的属性）的方法；    
+3. 控制器可以在model上注册watch，控制器行为完成后，watch立即执行；
+Scope $watch
+1. 脏检查时，不访问DOM，只对比js对象的属性，效率高；
+2. $watch的三种方式：
+   a. 通过引用：scope.$watch (watchExpression, listener)  只检查watchExpression的整体返回值，如果返回值是数组或对象，内部变化不检查；最有效
+   b. 通过集合内容：scope.$watchCollection (watchExpression, listener) 当数组或对象内部的项有新增、删除、重排序时，被检查到。 只查第一层，类似于浅拷贝；代价高
+   c. 通过值：scope.$watch (watchExpression, listener, true) 检查任何变化；代价最高
+集成浏览器的事件环
+1. angularjs与浏览器事件环的交互：
+   a. 浏览器的事件环等待外部事件；
+   b. 外部事件到达后进入js回调，在js上下文中可修改DOM；
+   c. 回调结束，浏览器离开js上下文，基于DOM变化重新渲染视图；
+2. 以angularjs的方式重新描述1:
+   前置： 同1(a)
+   a. 调用scope.$apply(stimulusFn)进入angular上下文；stimulusFn是你想做的事;
+   b. 执行stimulusFn，修改应用状态；
+   c. 进入$digest循环（大环），内含两个小环，一个是 $evalAsync队列(queue)，一个是 $watch列表(list),
+      大环一直循环到model稳定，即$evalAsync队列为空，且$watch列表不再检测到变化:
+   d. $evalAsync队列: 当前栈帧以外有一些工作需要调度，由$evalAsync队列完成，避免UI闪烁；
+   e. $watch列表: 是一套表达式，大循环可导致表达式值改变，引起$watch调用，修改DOM；
+   f. 大循环完成，进入1(c)
+   
+chapter 7 依赖注入
+1. injector子系统掌管组件创建，分析依赖，按需提供依赖；
+DI在angular中无处不在
+1. services, directives, filters, 和animations：通过可注入的工厂方法或构造函数创建，可注入组件：服务、值；
+2. Controllers：通过构造函数创建，可注入组件：服务，值，特别依赖；
+3. run方法：接受一个函数，该函数可注入组件：服务，值，常量，不能注入provider.
+4. config方法：接受一个函数，该函数可注入组件：provider，常量，不能注入服务和值组件；
+工厂方法：//depService指依赖的服务
+1. 定义服务: angular.module('myModule', []).factory('serviceId', ['depService', function(depService) {  // ...}])
+2. 定义指令：angular.module('myModule', []).directive('directiveName', ['depService', function(depService) {  // ...}])
+3. 定义filter: angular.module('myModule', [])..filter('filterName', ['depService', function(depService) {  // ...}]);
+4. 以上方法完成后，都返回module，以方便链式编程；
+Module方法（指config和run方法）：
+1. angular.module('myModule', []).config(['depProvider', function(depProvider) {  // ...}])
+2. angular.module('myModule', [])..run(['depService', function(depService) {  // ...}]);
+控制器定义的数组式标记法
+1. someModule.controller('MyController', ['$scope', 'dep1', 'dep2', function($scope, dep1, dep2) {//...}]);
+2. 对同一个app，服务是单例的，同一种类型的控制器可以有多个实例；
+3. $scope: 控制器是被绑定到DOM的某个元素，所以可依赖scope；其它组件如服务只能依赖root scope;
+4. resolves: 如果控制器是作为route的一部分被实例化的，那么任何做为route构成部分的值都可注入到控制器；
+依赖注解
+1. angular使用injector调用服务工厂和控制器，而这些调用又有依赖，有三种方式告之injector这些依赖：
+2. 方式一：内联数组标记法(推荐)：someModule.controller('MyController', ['$scope', 'greeter', function($scope, greeter) {  // ...}]);
+   第二个参数是数组，数组最后一个是函数，函数参数序与依赖相同；
+3. 方式二：$inject属性标记法：
+	var MyController = function($scope, greeter) {  // ...}  //定义一个普通函数对象
+	MyController.$inject = ['$scope', 'greeter'];  //给这个函数对象的$inject属性加入依赖数组
+	someModule.controller('MyController', MyController); // 定义控制器
+4. 方式三：隐式标记法，假设参数名就是函数名;
+  【一般不推荐，若使用minifiers/obfuscators等js工具，会出错，想避免的话使用 ng-annotate工具和ng-strict-di】
+使用严格依赖注入模式
+1. 在使用ng-app的那个元素上加上ng-strict-di指令；　<html ng-app="myApp" ng-strict-di>
+2. 当使用隐式标记法时，严格模式会抛异常；
+3. 手工启动时在配置项中加入的方式： angular.bootstrap(document, ['myApp'], {strictDi: true});　
+为什么使用DI
+1. 组件（对象或函数）有三种方式取得依赖（前两种是硬编码，难于修改，难于测试）：
+	a. 组件使用new运算符创建依赖；
+	b. 组件通过引用全局变量查找依赖；
+	c. 当它需要的时候，依赖会传给它；
+2. injector是一个service locator，它负责构造和查找依赖；
+3. angularjs编译模板时，会处理ng-controller指令，进而要求injector创建controller实例，进而处理依赖；
+   要点：ng-controller->injector->controller实例和依赖； controller实例本身不知道injector的存在；
+********************************************************************************************************************************************************
+More formally, the Law of Demeter for functions requires that a method m of an object O may only invoke the methods of the following kinds of objects:[2]
+
+O itself
+m's parameters
+Any objects created/instantiated within m
+O's direct component objects
+A global variable, accessible by O, in the scope of m   
+********************************************************************************************************************************************************
+
+chapter 8 模板
+
+
+
+
+
+chapter 9 表达式
+chapter 10 Interpolation
+chapter 11 filter 
+chapter 12 forms
+chapter 13 指令
+chapter 14 组件
+chapter 15 组件路由
+chapter 16 动画
+chapter 17 模块
+chapter 18 HTML编译器
+chapter 19 provider
+chapter 20 启动
+chapter 21 单元测试
+chapter 22 端到端测试
+chapter 23 $location服务
+chapter 24 使用css
+chapter 25 国际化
+chapter 26 安全
+chapter 27 Accessibility
+chapter 28 IE兼容性
+chapter 29 产品环境运行
+chapter 30 迁移
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
