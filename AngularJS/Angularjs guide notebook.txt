@@ -1,3 +1,5 @@
+申明：若需转载，请注明出处：
+
 下面的页面包括了所有与该版本相关的官方维护资源：
 https://code.angularjs.org/1.5.5/docs/guide
 
@@ -9,7 +11,7 @@ chapter 1 介绍
 一个完整的客户端解决方案
 1. angularjs适合于CRUD的web app.
 2. 游戏类和GUI编辑器大量操作DOM，使用jquery更好些，不适合angularjs.
-angulajs之禅
+angularjs之禅
 1. angularjs是申明式代码，不是命令式代码；
 2. 解耦DOM操作与业务逻辑；
 3. 代码结构不好，就不好测试，重视可测试性；
@@ -167,6 +169,14 @@ Scope $watch
    d. $evalAsync队列: 当前栈帧以外有一些工作需要调度，由$evalAsync队列完成，避免UI闪烁；
    e. $watch列表: 是一套表达式，大循环可导致表达式值改变，引起$watch调用，修改DOM；
    f. 大循环完成，进入1(c)
+*************************************
+scope.$parent指向scope的父作用域；
+scope.$$childHead指向scope的第一个子作用域；
+scope.$$childTail指向scope的最后一个子作用域；
+scope.$$nextSibling指向scope的下一个相邻作用域；
+scope.$$prevSibling指向scope的上一个相邻作用域；
+*************************************
+   
    
 chapter 7 依赖注入
 1. injector子系统掌管组件创建，分析依赖，按需提供依赖；
@@ -221,14 +231,92 @@ A global variable, accessible by O, in the scope of m
 ********************************************************************************************************************************************************
 
 chapter 8 模板
-
-
-
-
+1. 概念: 包含了angularjs的元素和属性的html;
+2. 可使用的元素和属性：
+   a. 指令，有些指令元素看上去与html元素相同，但是是增强过的，如form，input，a，select，textarea;
+   b. Markup: 即{{表达式}};
+   c. Filter: 格式化显示数据；
+   d. Form controls: 验证用户输入
+3. 单页应用：基于$route配置，通过ngView指令，在一个主页中的不同部分，加载一小段模板代码（partials），以显示多个视图；
 
 chapter 9 表达式
-chapter 10 Interpolation
+1. 概念：一小段js类的代用，主要用于插值绑定；{{ 值表达式 }}，ng-click="函数设用表达式"
+2. angularjs表达式 vs js表达式
+   a. js基于全局window，angularjs基于scope;
+   b. 计算未定义的属性，js生成引用错误或类型错误，angularjs生成null或undefined，没js那么严厉（Forgiving）;
+   c. angularjs表达式不能使用条件，循环，或抛常，除了三目操作符；
+   d. angularjs表达式不能做函数申明或正则表达式创建；
+   e. angularjs表达式不能使用new创建对象；
+   f. angularjs表达式不能使用',',‘void’操作符；
+   g. 可以使用filter;
+3. 计算angularjs表达式：$eval(angularjs表达式)
+4. $parse服务： $parse(String expression to compile), var getter = $parse('user.name'); 转angular表达式为函数；
+5. window-》$window, location->$location， angularjs表达式不访问window,location,document等传统全局对象；
+6. 可以使用this；
+7. 局部对象可以使用$locals；
+*********************************************
+selfReferential: {
+    'this': {type: AST.ThisExpression },
+    '$locals': {type: AST.LocalsExpression }
+  }
+*********************************************
+8. $event: 即jQuery中的Event Object，在使用 ngClick或ngFocus时会暴露在指令的scope中。
+9. 一次性绑定：以‘::’开头的表达式是一次性表达式； {{::name}}   {{name}}
+10. 一次性绑定用于注销或释放资源，减少watch的表达式的数量，使得digest过程更快；
+11. 适用场合：一旦设置，不可改变的地方；
+12. 一次性表达式值稳定算法原理(了解)：
+   a. 假设表达式以::开头，进入digest循环，表达式做脏检查，存值为V；
+   b. 若V不是未定义，标记表达式为‘稳定’，当退出digest循环时，起一个调度任务去注销对这个表达式的watch;
+   c. 处理digest循环至结束；
+   d. 当digest循环结束时，所有的值都已处理，继续处理注销watch的任务队列；
+      对于每一个将被注销的watch，计算对应的表达式是否仍不是未定义的，如果是这种情况，销注watch;
+	  否则，不注销watch，以便在下次digest循环时继续做脏检查；
+
+chapter 10 Interpolation与数据绑定
+1. 用于给文件结节或属性值提供数据绑定；<a ng-href="img/{{username}}.jpg">Hello {{username}}!</a>  //插值符号，即{{}}
+2. 原理：编译时，编译器使用 $interpolate查看文本节点和属性是否有{{表达式}}，如果有，它给节点加一个插值指令，
+   并给插值函数加一个watch。这样，在digest周期时就会更新对应文本节点和属性的值。插值指令优先级100,每个链接都设置一个watch；
+3. 绑定到bool属性：  ng-disabled, ng-required, ng-selected, ng-checked, ng-readOnly , ng-open;
+   错误：<button disabled="{{isDisabled}}">Disabled</button>
+   正确：<button ng-disabled="isDisabled">Disabled</button>;   //ng-disabled="angular表达式"，这里不用插值符号；
+4. 使用ngAttr绑定到任意属性
+   a. 使用ng-attr-【属性名】;
+      原理：$interpolate的allOrNothing标记此时会派上用场，如果插值字符中的任何表达式导致了未定义，属性将会被移除；
+   b. 如果原属性名是骆驼风格的，如viewBox，改写为下划线风格，如ng-attr-view_box；
+   c. 一般可使用原属性名，若出现问题，就可以试下ngAttr。
+     如<select ng-attr-size={{name}}>，
+	   <textarea ng-attr-placeholder={{name}}>，
+       <button ng-attr-type={{type}}>	   
+5. 指令的属性要么是表达式，要么是{{表达式}}，禁止在表达式中再用插值符号，可能出现难以定位的错误；
+   例如：<div ng-show="form{{$index}}.$invalid"></div>
+6. 在模板中，用this表示scope;  //<div ng-show="this['form' + $index].$invalid"></div>
+	  
 chapter 11 filter 
+1. 格式化显示的值，用于视图模板，控制器或服务；
+2. 底层的API是filterProvider；
+3. 用于视图模板：{{ expression | filter }}
+   e.g.:{{ 12 | currency }} 显示$12.00，
+   完整用法：{{ currency_expression | currency : symbol : fractionSize}}
+4. filter的链式使用：{{ expression | filter1 | filter2 | ... }}
+5. 带参数的filter: {{ expression | filter:argument1:argument2:... }}
+   e.g.{{ 1234 | number:2 }} 显示 1,234.00
+
+
+
+
+*****************************************************************************
+API自带的filter:
+currency： 格式化货币
+date：所有年月日时分秒毫秒上午下午时区周纪元等
+filter：从数组中选一个子集，返回一个新数组
+json：转js对象到json的字符串
+limitTo：在数组或字符串或数字中，从头开始或从尾开始，取指定个数元素，创建新数组或字符串；
+lowercase：转小写
+number：格式化数字为文本；
+orderBy：对指定数组排序；
+uppercase：转大写
+*****************************************************************************   
+
 chapter 12 forms
 chapter 13 指令
 chapter 14 组件
@@ -238,16 +326,24 @@ chapter 17 模块
 chapter 18 HTML编译器
 chapter 19 provider
 chapter 20 启动
-chapter 21 单元测试
-chapter 22 端到端测试
+chapter 21 单元测试（略）
+chapter 22 端到端测试（略）
 chapter 23 $location服务
 chapter 24 使用css
-chapter 25 国际化
+chapter 25 国际化（略）
 chapter 26 安全
-chapter 27 Accessibility
+
+chapter 27 Accessibility（to persons with disabilities，略）
 chapter 28 IE兼容性
+1. angularjs1.2版本支持到IE8；
+2. angularjs1.3-1.55版本支持到IE9及以上版本；
+3. 使用ng-style，而不是style="{{ someCss }}"；
+4. 错误：<button type="{{someExpression}}"">Disabled</button>
+   正确：<button ng-attr-type="{{someExpression}}"">Disabled</button>
+
 chapter 29 产品环境运行
-chapter 30 迁移
+
+chapter 30 迁移（略）
 
 
 
