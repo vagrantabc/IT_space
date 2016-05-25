@@ -38,6 +38,14 @@ chapter 2 概念总览：
 12. Injector：依赖注入的容器；
 13. 模块：一个包括了控制器、filter、服务、指令等不同app部分的容器，容器中的各部分用于配置infector；
 14. 服务：独立于视图的可重用的业务逻辑；
+*********************************************************************************
+概念级：数据绑定，scope, DI，模板，Bootrap（启动），module
+小组件：angularjs表达式，插值符号，Filter，form表单控件
+大组件：controller，service，Direcitve，Component，animation
+        controller，service，Direcitve是最常用的三大组件  
+系统级：模板编译器，injector，Provider（向injector提供处方），Component Router
+其它：测试，国际化，产品化，迁移，兼容性，安全，css，SEO  
+*********************************************************************************
 
 数据绑定：
 1. 用angularjs写的html就叫模板；
@@ -300,10 +308,29 @@ chapter 11 filter
 4. filter的链式使用：{{ expression | filter1 | filter2 | ... }}
 5. 带参数的filter: {{ expression | filter:argument1:argument2:... }}
    e.g.{{ 1234 | number:2 }} 显示 1,234.00
-
-
-
-
+在controller，service和directive中使用filter注入；
+1. 注入filter时的命名： e.g. 下面有一个库过滤器叫number，按<filterName>Filter的格式，就叫numberFilter；
+   e.g. controller('FilterController', ['filterFilter', function(filterFilter) {...//}
+2. 注入的filter本身是一个函数，这个函数带的第一个参数是被格式化的对象，后面带格式化参数；
+3. filter可以在模板中调用，也可以在js中调用，但在js中调用效率更高；
+创建自定义filter
+1. 在module中注册一个新的filter工厂函数，内部会调用$filterProvider服务；
+   //用函数来封装特定接口创建对象的细节，这个函数就是工厂函数;
+******************************************   
+angular.module('myReverseFilterApp', [])
+.filter('reverse', function() {
+  return function(input, uppercase) {
+    var out = "";
+	...//
+    return out;
+  };
+})   
+******************************************
+2. 有状态的filter
+  a. 强烈不推荐，无法优化，常导致性能问题；
+  b. 若有需要，把状态暴露成model，或把它转为filter的参数；
+  c. 实现：decorateFilter.$stateful = true;
+  d. 使用module.value（）定义全局变量：.value('decoration', {symbol: '*'});
 *****************************************************************************
 API自带的filter:
 currency： 格式化货币
@@ -318,6 +345,78 @@ uppercase：转大写
 *****************************************************************************   
 
 chapter 12 forms
+1. 什么叫controls: 指input, select, textarea, 用户可以输入数据；
+2. 什么叫form: 一组controls的集合，主要目的用于归组；
+3. Form和controls可以提供验证服务，属于客户端验证；
+4. 客户端验证用户体验好，但容易被绕过，必须要服务器端验证
+简单form
+1. 用ngModel指令绑定;
+2. <form novalidate class="simple-form"> 
+   // novalidate用于disable掉浏览器本身的form验证；
+   // 注意class的设置
+3. 用户的输入只有通过验证，才会被设给model;
+4. angular.copy(source, [destination])创建一个source的深拷贝；
+使用css类
+1. input.ng-valid.ng-touched ： //一个元素的class属性中要同时有这两个类名，样式才生效;
+2. ngModel会给元素加以下class:
+   a. ng-valid: 模型合法；
+   b. ng-invalid： 模型不合法；
+   c. ng-valid-[key]: 对$setValidity（ngModelController方法的方法之一）加的每一个合法的key，加上本类；
+   d. ng-invalid-[key]: 对$setValidity加的每一个不合法的key，加上本类；
+   e. ng-pristine: 控制器还没有与本元素交互；
+   f. ng-dirty: 控制器已与本元素交互；
+   g. ng-touched: control组件已被弄脏；（即使还是原来的值，但发生了用户交互）
+   h. ng-untouched: control组件未被弄脏；
+   i. ng-pending: 有$asyncValidators(ngModel的属性)未被执行；
+绑定到form和control的状态
+1. 一个form是FormController的一个实例，可以使用name属性发布到scope; 
+   e.g.: <form name="form" class="css-form" novalidate>
+   //因为name="form"，所以$scope.form是一个form.FormContrller实例；
+   //参见form.FormController API文档
+2. 一个有ngModel指令的input control执有一个NgModelController的实例。
+   使用input control的name属性，control实例可以发布成form实例的属性；
+   e.g.: <input type="text" ng-model="user.name" name="uName" required="" />
+   //因为name="uName"，所以$scope.form.uName是一个ngModel.NgModelController的实例；
+3. 结合$touched，可以显示用户交互后的错误消息；
+4. 结合$submitted，可以显示用户提交后的错误消息；
+5. form.$setPristine();  参见API文档：form.FormController的接口
+6. $error：一个hash表，错误验证器的id是key.
+定制的模型更新触发器：ng-model-options
+1. 缺省情况下，内容的更新会触发模型更新和form验证，是“立即更新”方式；
+2. 可以使用ngModelOptions指令只让特定事件触发更新和验证；
+3. blur: 弄脏，丢失焦点，doc有动画示意，很直观；
+4. ng-model-options="{ updateOn: 'mousedown blur' }"  //指定两个事件
+5. ng-model-options="{ updateOn: 'default blur' }" //除了缺省，再加一个事件
+非立即（防反跳）模型更新
+1. 使用 ngModelOptions指令和debounce关键字；对解析器，验证器和model的标签属性生效；
+   //ng-model-options="{ debounce: 500 }"
+   //最后的内容更新后0.5秒，触发缺省事件；
+2. 使用debounce对象时，对每种事件延迟进行描述：
+   //ng-model-options="{ updateOn: 'default blur', debounce: { default: 500, blur: 0 } }"
+3. 如果ng-model-options用于某个元素的属性，它的所有子元素都起作用，除非被override.
+使用定制验证器(看完direcitve后再更新)
+1. angular对常见的input组件text, number, url, email, date, radio, checkbox和一些指令
+   提供(required, pattern, minlength, maxlength, min, max)方面的验证；
+2. 写自定义指令，可能用到自定义验证器；
+3. ngModelController.$validators.myValidator，其中myValidator（名字任意取）是自定义验证函数；
+4. directive.link的函数形式：function(scope, elm, attrs, ctrl)；
+5. 可以给ctrl.$validators/ctrl.$asyncValidators添加一个函数属性，
+   该函数是自定义验证器，形式为：function(modelValue, viewValue)，
+   如：ctrl.$asyncValidators.username 添加一个username的验证器
+6. /^\-?\d+$/: 最多只能有一个'-'，且至少包含一个数字;
+7. $q:异步运行函数的服务，并使用其返回值或异常；
+   var def = $q.defer(); //一个defer对象，它表示一个在将来结束的任务；
+   API中的Parameters Type为*，且灰显的背景，表示可以没有值或有任意值；
+   $q.when(value)：传递变量值 //Returns a promise of the passed value or promise
+8. $timeout： angularjs版的window.setTimeout;
+修改内置的验证器(看完direcitve后再更新)
+实现定制的form control(看完direcitve后再更新)
+
+
+   
+   
+
+
 chapter 13 指令
 chapter 14 组件
 chapter 15 组件路由
@@ -333,6 +432,11 @@ chapter 24 使用css
 chapter 25 国际化（略）
 chapter 26 安全
 
+
+
+
+
+
 chapter 27 Accessibility（to persons with disabilities，略）
 chapter 28 IE兼容性
 1. angularjs1.2版本支持到IE8；
@@ -342,6 +446,32 @@ chapter 28 IE兼容性
    正确：<button ng-attr-type="{{someExpression}}"">Disabled</button>
 
 chapter 29 产品环境运行
+1. 缺省情况下，AngularJS会把“绑定”和“DOM对应的scope”关联起来，给有数据绑定的DOM元素加上css类，结果：
+   a. 如果使用ngBind, ngBindHtml 或 {{...}}，绑定数据和css类ng-binding就会关联到对应元素；
+   b. 当编译器创建一个新的scope时，这个新scope和css类ng-scope、ng-isolated-scope会关联到对应元素，
+      这个新的scope可以通过element.scope() 和 element.isolateScope()访问；
+   c. 这些是属于调试信息，Protractor and Batarang会用到；
+2. 去掉调试信息，在js文件中加入：
+   myApp.config(['$compileProvider', function ($compileProvider) {
+	$compileProvider.debugInfoEnabled(false);
+	}]); 
+3. 打开调试信息：浏览器-》控制台-》angular.reloadWithDebugInfo(); //重载页面，打开调试信息；
+4. 严格DI模式：不允许可注入的函数使用隐式标记法，会抛出错误；
+5. 可注入的函数要使用显示标记法（chapter 7 方法一，方法二），这样无需动态发现，可改进性能；
+6. 建议使用类似ng-annotate的工具；//https://github.com/olov/ng-annotate
+7. 严格DI模式可以在js压缩后仍有效；
+8. 申明为严格模式：
+在模板文件中申明：
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+   <div ng-app="myApp" ng-strict-di>
+		<!-- your app here -->
+   </div>
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+或在js中申明：
+angular.bootstrap(document, ['myApp'], {
+  strictDi: true
+});
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 chapter 30 迁移（略）
 
