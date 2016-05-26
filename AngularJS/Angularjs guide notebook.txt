@@ -403,36 +403,216 @@ chapter 12 forms
 5. 可以给ctrl.$validators/ctrl.$asyncValidators添加一个函数属性，
    该函数是自定义验证器，形式为：function(modelValue, viewValue)，
    如：ctrl.$asyncValidators.username 添加一个username的验证器
+   // ctrl.$validators.integer = function(){} //integer这个验证器原lib中没有，被添加进去；
 6. /^\-?\d+$/: 最多只能有一个'-'，且至少包含一个数字;
 7. $q:异步运行函数的服务，并使用其返回值或异常；
    var def = $q.defer(); //一个defer对象，它表示一个在将来结束的任务；
    API中的Parameters Type为*，且灰显的背景，表示可以没有值或有任意值；
    $q.when(value)：传递变量值 //Returns a promise of the passed value or promise
+   def.resolve(); //when的别名
+   def.reject(); // 前转被拒的原因
 8. $timeout： angularjs版的window.setTimeout;
-修改内置的验证器(看完direcitve后再更新)
-实现定制的form control(看完direcitve后再更新)
+修改内置的验证器
+1. 定制的邮箱正规表达式：var EMAIL_REGEXP = /^[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@example\.com$/i;
+2. <input type="email" ng-model="myEmail" overwrite-email name="overwrittenEmail" /> //overwrite-email是定制的指令
+3. ctrl.$validators.email= function(){} //email这个验证器原lib中就有，被改写了；
+实现定制的form control
+1. 模型-》DOM：当数据传给 NgModelController.$formatters后，需要调$render方法，得自行实现；
+   // model -> view
+      ctrl.$render = function() {
+        elm.html(ctrl.$viewValue);
+      };
+2. DOM-》模型： 实现$setViewValue；// ctrl.$setViewValue(elm.html());
+
+chapter 13 指令: 创建自定义指令
+什么是指令
+1. 从高层来看，指令是DOM元素的属性，元素名，注释或css类的标记，以告之$compile去对这个DOM元素关联某种行为
+  （如通过事件监听器），甚至改为这个DOM元素及其子元素；
+2. angular有一套内置的指令，也可以自定义指令；
+3. 在angular启动时，HMTL编译器会遍历DOM元素去匹配指令；
+4. “编译HTML模板”：指关联指令到html，以使之可交互；
+5. 与jQuery中元素匹配选择器类似，当指令是元素申明的一部分时，这个元素匹配指令；
+   //<input ng-model="foo">//<input data-ng-model="foo">//<person>{{name}}</person>
+指令的标准化形式：
+1. 标准化：大小写敏感的camelCase形式，如ngBind，ngModel;
+2. html是大小写不敏感的，通常用ng-model的形式；
+   ng-bind（推荐版）,ng:bind,ng_bind,data-ng-bind(html验证工具版),x-ng-bind都合法；
+   其它版本应避免使用；
+3. 算法：
+    a. 干掉以data-或x-打头的子串；
+	b. 以:, -, 或 _切分单词，并合并以camelCase的形式；
+指令类型
+1. 四类：元素名，属性名，类名，注释（comment）
+2. angular提供的指令匹配所有四类；
+3. 用法：
+*****************************************
+<my-dir></my-dir>                    //推荐
+<span my-dir="exp"></span>           //推荐
+<!-- directive: my-dir exp -->       //不推荐
+<span class="my-dir: exp;"></span>   //不推荐
+*****************************************
+4.  ng-repeat-start 和 ng-repeat-end可避免使用comment指令；
+创建指令
+1. module.directive（“标准化的指令名”，【依赖...  工厂函数】）
+2. 工厂函数返回一个对象，对象中有配置项，会告之编译器如何行为；
+3. 当编译器匹配到指令时，工厂函数只被$injector.invoke调用一次，可以完成初始化的工作；
+4. 推荐工厂函数返回一个对象，而不是直接返回一个函数；
+5. 指令前缀：最好带上自定义的指令前缀，如qldComputer，但不要带ng前缀；
+模板扩展指令
+1. 静态模板的代码复用，配置项： template/templateUrl；
+2. 工厂返回对象：{template: 'Name: {{customer.name}} Address: {{customer.address}}'}  //内联式
+3. 工厂返回对象：{templateUrl: 'my-customer.html'};  //外联式， 这样，my-customer.html这个代码片就可以多处复用；
+   my-customer.html的内容： Name: {{customer.name}} Address: {{customer.address}} 
+4. templateUrl的值可以是url，也可以是函数；
+5. 这个函数的原型：function(elem, attr)；//elem: 指令作用的元素， attr: 这个元素的属性，attr.【属性名】的引用方式可得到属性值；
+6. 使用约束选项，就可以不再受元素，属性的约束，可以扩展到class和comment；
+7. A-->Attribute, E-->Element, C-->class, M-->comment，可以联合组成字符串，如'AEC'；
+8. 工厂返回对象： {restrict: 'E',    templateUrl: 'my-customer.html'}  //使用了约束选项的返回对象
+9. 给现存在组件增强功能时，使用属性；创建新组件使用元素；
+孤立指令的scope
+1. 没有孤立的scope，模板指令只能在即定的scope中使用一次，因为多次出现的模板都会绑到相同的底层model，会相互影响；
+   在出现指令的地方，使用controler创建新的scope，太繁琐；
+2. 把模板指令内的scope与外部分里出来，映射外部scope到内部scope，这就产生了scope配置项；
+3. ***************************************
+   {
+    restrict: 'E',
+    scope: {
+      customerInfo: '=info'  //<my-customer info="naomi"></my-customer>  $scope.naomi =XX
+    },
+    templateUrl: 'my-customer-iso.html'
+   }
+   ***************************************
+4. scope配置项是一个对象，里面包含一个属性，表示每个孤立scope如何绑定；
+5. 属性名：孤立scope的属性名； 属性值：告诉编译器绑定到DOM元素的对应属性名；
+6. =attr 在内部整体视为指令；  // '=bindToThis'  --> <div bind-to-this="thing">  
+7. 同名缩写形式： scope: {  customer: '='} ；
+8. 要想重用模板组件，就要用孤立scope;
+创建操作DOM的指令
+1. 使用link配置项； //{link: link};
+2. 值是放置指令逻辑的地方；
+3. link配置项注册DOM监听器并更新DOM的值；
+4. link的指令逻辑在模板克隆后执行；
+5. function link(scope, element, attrs, controller, transcludeFn) { ... }
 
 
-   
-   
+创建打包其它元素的指令
+创建加事件监听器的指令
+创建通信的指令
 
 
-chapter 13 指令
-chapter 14 组件
+
+chapter 14 组件：理解组件
+创建和配置组件
+指令定义和组件定义的比较
+其于组件的应用架构
+组件树举例
+作为根模板的组件
+组件间通信
+组件控制器的单元测试
+
 chapter 15 组件路由
+总览
+基于组件的应用
+URL与导航
+组件路由
+出口（Outlets）
+根路由与组件
+路由匹配
+Heroes App举例 //...
+
 chapter 16 动画
+安装
+如何工作
+Class and ngClass动画钩子（hook）
+哪些指令支持动画
+如何在自定义指令中使用动画
+在app启动时或页面加载时的动画
+如何有选择的激活/去活/忽略动画
+在动画开始前防止闪烁
+防止与现存的或第三方库冲突
+更多动画信息
+
+
 chapter 17 模块
+什么模块
+为什么 
+基础
+推荐设置
+模块加载与依赖
+配置块
+运行块
+依赖
+异步加载
+创建vs获取
+单元测试（略）
+
+
 chapter 18 HTML编译器
+总览
+编译器
+指令
+理解视图
+如何编译指令
+编译与链接的区别
+理解scope如何与被引用的指令协同工作
+
+
 chapter 19 provider
+模型的总体概念
+值方法
+工厂方法
+服务方法
+Provider方法
+常量方法
+特定目的对象
+小结
+
 chapter 20 启动
+Angular的<javascript>标签
+自动初始化
+手动初始化
+要点
+延迟初始化
+
+
 chapter 21 单元测试（略）
 chapter 22 端到端测试（略）
+
 chapter 23 $location服务
+$location与window.location的比较
+为什么要使用$location
+$location不能做什么
+$location API概览
+$location服务配置
+Getter 和 setter方法
+Replace方法
+Setters与字符编码
+Hashbang与HTML5模式
+警告
+
+
 chapter 24 使用css
+1. angular使用的css类
+   ng-scope： 给元素定义一个新的scope;
+   ng-isolate-scope: 给元素定义一个新的孤立的scope;
+   ng-binding: 给元素做一个数据绑定，同ng-bind 或 {{}}；
+   ng-invalid, ng-valid： form control完成输入验证，angular会视通过情况把其中一个class应用于这个control;
+   ng-pristine, ng-dirty: 用户未与form control产生交互，angualar在form control上使用ng-pristine，否则使用ng-dirty；
+   ng-touched, ng-untouched：form control未失去焦点时，使用ng-untouched，否则使用ng-touched；
+   
+
 chapter 25 国际化（略）
+
 chapter 26 安全
-
-
+安全问题报告
+尽可能使用最新版本
+表达式沙盒
+HTTP请求
+跨站请求伪造(XSRF/CSRF)
+JSON劫持保护
+严格的上下文转义
+使用本地缓存
+ngCsp(Content Security Policy)
 
 
 
