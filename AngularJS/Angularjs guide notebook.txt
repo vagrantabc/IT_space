@@ -492,21 +492,57 @@ chapter 13 指令: 创建自定义指令
 2. 值是放置指令逻辑的地方；
 3. link配置项注册DOM监听器并更新DOM的值；
 4. link的指令逻辑在模板克隆后执行；
-5. function link(scope, element, attrs, controller, transcludeFn) { ... }
-
-
+5. function link(scope, 
+                 element, //sqlite包裹的与该指令匹配的对象，可做DOM操作； 
+				 attrs, //对象，属性名值对，属性名是标准化的；
+				 controller, //依赖于require 属性，可以是指令required的属性，或它自已的属性；
+				 transcludeFn //每个适当嵌入的scope所预绑定的嵌入链接函数；
+				 ) { ... }
+6. 重点阅读： $compile（服务） API doc
+7. 因为link函数有element，所以可以操作元素；
+8. 单向绑定符号： <,  双向绑定符号：@ ； 
+9. 与angular相关的事件： 
+   a. $onInit(): DOM元素被创建，与之相关的绑定被初始化，但在 pre & post linking函数之前；
+   b. $onChanges: 单向或双向绑定被更新时；
+   c. $onDestroy(): 控制器包括的scope被销毁时；
+   d. $postLink(): 控制器元素和它的子被链接之后；
+9. 注册到scope和元素的监听器会自动销毁，注册到服务或DOM节点的监听器需要手动删除；
+   //使用 element.on('$destroy', ...) ， scope.$on('$destroy', ...)
 创建打包其它元素的指令
+1. transclude: true, //能访问指令外部的scope，指令不再有自己内部的scope；
+2. scope: {}； //创建一个内部的scope;
+3. scope配置项的“&” 绑定： 在事件出现的特定时间，在原来的scope上下文中计算表达式；
 创建加事件监听器的指令
 创建通信的指令
-
-
+1. require: '^^myTabs', //有^会去查它的父的controller;
+2. 指令可以有自己的控制器；
+3. controllerAs： 指定控制器别名；
+4. controller能够暴露API，link函数可以使用require与controller交互；
 
 chapter 14 组件：理解组件
+1. 组件：一类特殊的指令，配置更为简单，适用基于组件的应用架构
+2. 优点：
+    a. 配置比普通指令简单；
+	b. 有健全的缺省和最佳实践；
+	c. 对基于组件的架构优化；
+	d. 更容易升级到angular2;
+3. 限制：
+    a. 有DOM操作，加事件监听的不适合；
+	b. 高级指令定义不适合；
+	c. 被属性或class触发（而不是元素）的指令不适合；
 创建和配置组件
+1. 创建定义： angular.module('heroApp').component('组件名', {组件配置项})
+2. 组件只控制它自己的视图和数据；
+3. 组件有定义良好的输入输出API；
+4. 组件输入只使用： 单向<   、//'='也是单向，但会向上传播到父scope
+5. 当组件属性是string，且不变化，用@;
+6. 组件输出使用&;
+7. 组件有一个定义良好的生命周期；
+8. 一个应用就是一个输入输出定义良好的组件树，且最小化双向绑定；
 指令定义和组件定义的比较
 其于组件的应用架构
 组件树举例
-作为根模板的组件
+作为路由模板的组件
 组件间通信
 组件控制器的单元测试
 
@@ -516,6 +552,9 @@ chapter 15 组件路由
 URL与导航
 组件路由
 出口（Outlets）
+1. 每个组件都需要一个模板，模板中有一个或多个Outlet，以便渲染它的子组件；
+2. 
+
 根路由与组件
 路由匹配
 Heroes App举例 //...
@@ -557,7 +596,7 @@ chapter 18 HTML编译器
 理解scope如何与被引用的指令协同工作
 
 
-chapter 19 provider
+chapter 19 provider：使用injector去创建对象的五种recipe之一，最繁琐，也最容易理解；
 模型的总体概念
 值方法
 工厂方法
