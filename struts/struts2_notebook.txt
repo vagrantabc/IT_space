@@ -1,0 +1,120 @@
+http://struts.apache.org/docs
+file:///E:/project_doc/struts-2.3.28.1/docs/docs/ready-set-go.html
+
+
+
+映射REST URLs到Struts 2 Actions
+1. URL->(mapping: ActionMapper:DefaultActionMapper)->Action;
+2. URL->(mapping: ActionMapper:RestActionMapper)->Action(即是REST的controller)；
+3. controller的方法前缀： '!' or 'method:'；
+4. mapper支持的参数：
+	a. struts.mapper.idParameterName： id.
+	b. struts.mapper.indexMethodName: get请求，无id，缺省为index;
+	c. struts.mapper.getMethodName: get请求，有id，缺省为show;
+	d. struts.mapper.postMethodName： post请求，无id，缺省为create;
+	e. struts.mapper.putMethodName: post请求，有id，缺省为update;
+	f. struts.mapper.deleteMethodName: delete请求，有id，缺省为destroy；
+	g. struts.mapper.editMethodName: get请求，有id，有edit视图，缺省为edit;
+	h. struts.mapper.newMethodName: get请求，无id，有new视图，缺省为editNew;
+5. 支持的数据格式： html,xml,json;
+6. 所需插件： Struts 2 Rest Plugin， Struts 2 Convention Plugin， 从Maven Central下载；
+7. 配置struts.xml:  
+   a. 只有rest的配置方式；
+   b. 与非rest风格的配置共存的方式；在Rest plugin jar中的struts-plugin.xml中，PrefixBasedActionMapper
+   
+   
+Core Developers Guide
+1. struts有三种类型可以处理URL：  interceptors, actions, and results；
+2. 核心包： struts2-core.jar；
+
+
+《Practical Apache Struts 2 Web 2.0 Projects》
+1. WebWork是struts2.0的项目基础；
+2. 开发者观点：ajax就是web 2.0;
+3. JSON传输格式responseJSON-->eval('('+responseJSON+')')-->js对象
+4. http://www.json.org/json.js，一般使用这个库去转，安全。
+5. jsonText.parseJSON(filter);myBoolean.toJSONString();
+6. 一页做为一个工作单元 vs 页面中的一个功能做为一个功作单元；
+7. Ruby on Rails web框架；
+
+
+《Struts.2.in.Action》
+Struts 2:现代web应用框架
+1. 技术栈：http->serlet->Struts 2;
+2. HTTP是无状态的（跨请求跟踪），基于文本的（文本与java对象的绑定与相互转换）；
+3. Servlet把HTTP暴露给了java平台；session mechanism;
+4. Servlet API核心功能：servlet（接受请求，返回响应）, request, and response objects；
+5. web application : “a collection of servlets, HTML pages,classes, and other resources.”
+6. 打包为： .war包(web application archive，jar包的特定版本)，；
+7. 三级：容器级（：8080），web应用:（解析名字空间，即port后面的那一段）, serlet级（解析名字空间）；
+8. Struts 2: 绑定请求参数到java类型、数据验证、调用业务逻辑、调用数据层、渲染表现层、国际化；
+9. 绑定与验证： a. string是不是一个合法的java type的表示，能否绑定， b. 绑定后，业务参数是否合法； action
+10. 业务层与数据层：
+11. 表示与国际化：
+12. 框架的作用：a.自动完成常见任务； b. 规定工作流程，可被使用这个框架的应用所继承；
+13. action-oriented framework;
+14. 祖宗：OpenSymphony WebWork framework；
+15. interceptors和OGNL在struts 2是新东西；
+16. FilterDispatcher->controller(映射请求给action), action->model, result->view;
+17. FilterDispatcher是一个servlet filter;
+18. 知会系统哪个URL映射到哪个action，基于xml或注释;
+19. 模型：应用的内部状态，包括数据模型和业务逻辑；
+20. 一个action是： 其一，是一个业务逻辑调用的封装，其二是数据传输的场所；
+21. action把业务处理完后，把结果提交给视图组件；
+22. view: JSP,Velocity, FreeMarker, and XSLT；
+23. view的作用：把应用状态以可交互的方式呈现给用户；
+24. ActionContext是threadlocal的，它包括了valuestack,request,session等；
+25. action和result协助组件：interceptors and the ActionContext；
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+ 
+	
+	
+	
