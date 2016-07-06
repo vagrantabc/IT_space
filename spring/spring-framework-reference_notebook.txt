@@ -1,0 +1,56 @@
+http://repo.springsource.org/libs-release-local/org/springframework/spring/4.3.1.RELEASE/
+http://repo.spring.io/release/org/springframework/spring
+
+
+20个包如下：
+测试：
+spring-test-4.3.1.RELEASE.jar
+核心容器
+spring-core-4.3.1.RELEASE.jar //基础模块
+spring-beans-4.3.1.RELEASE.jar //基础模块
+spring-context-4.3.1.RELEASE.jar //以框架的方式访问对象，国际化，资源bundles，事件传播，资源加载，容器创建上下文，远程访问，JMX，EJB，
+spring-context-support-4.3.1.RELEASE.jar //集成第三方库，如缓存（EhCache, Guava, JCache），JavaMail，调度（CommonJ, Quartz），模板（FreeMarker, JasperReports,Velocity）
+spring-expression-4.3.1.RELEASE.jar //JSP 2.1 specification的unified EL
+中间层
+spring-aop-4.3.1.RELEASE.jar //aop
+spring-aspects-4.3.1.RELEASE.jar //与AspectJ集成
+spring-instrument-4.3.1.RELEASE.jar //类工具的支持，classloader的实现
+spring-instrument-tomcat-4.3.1.RELEASE.jar //tomcat工具代理
+spring-messaging-4.3.1.RELEASE.jar //消息
+数据访问与集成
+spring-jdbc-4.3.1.RELEASE.jar  //jdbc
+spring-tx-4.3.1.RELEASE.jar  //支持编程与声明式事物
+spring-orm-4.3.1.RELEASE.jar //对象关系映射（JPA, JDO, and Hibernate）
+spring-oxm-4.3.1.RELEASE.jar //对象Object/XML映射（JAXB, Castor, XMLBeans, JiBX and XStream）
+spring-jms-4.3.1.RELEASE.jar //Java Messaging Service
+WEB
+spring-web-4.3.1.RELEASE.jar //基本web功能，多文件上传，IoC初始化，HTTP client，remote支持的web相关部分
+spring-webmvc-4.3.1.RELEASE.jar //Web-Servlet，spring mvc，REST Web Services,
+spring-webmvc-portlet-4.3.1.RELEASE.jar //Web-Portlet,用于Portlet容器，Portal是一个基于web的提供个性化、登录授权、从不同的数据源聚集内容基于展现层的信息系统。相对于servlet。
+spring-websocket-4.3.1.RELEASE.jar //websocket
+
+依赖管理与命名约定
+Maven groupId： org.springframework；
+日志系统：Jakarta Commons Logging API (JCL) 
+可选：Simple Logging Facade for Java( SLF4J),
+版本信息：notably, Hibernate 3.6+, EhCache2.1+, Quartz 1.8+, Groovy 1.8+, and Joda-Time 2.0+. As an exception to the rule, Spring 4 requires the
+recent Hibernate Validator 4.3+, and support for Jackson has been focused on 2.0+ now
+Java 8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
