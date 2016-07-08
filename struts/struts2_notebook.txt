@@ -1,6 +1,6 @@
 http://struts.apache.org/docs
 file:///E:/project_doc/struts-2.3.28.1/docs/docs/ready-set-go.html
-
+http://ftp.cuhk.edu.hk/pub/packages/apache.org/
 
 
 ”≥…‰REST URLsµΩStruts 2 Actions
