@@ -1,0 +1,98 @@
+《MongoDB in Action, 2nd.》
+MongoDB的shell是JavaScript shell，及Ruby driver.
+4-7章是基础，8-13章是特定议题。
+GridFS是一种将大型文件存储在MongoDB的文件规范。所有官方支持的驱动均实现了GridFS规范。
+MongoDB’s document format is based on JSON.
+10gen公司在做paas时发展出mongoDB。
+开源盈利模式：开发一个开源产品，并提供定制服务收费；
+文档对象模型，复制，水平扩展；
+JSON document
+a document is essentially a set of property names and their values.
+Internally, MongoDB stores documents in a format called Binary JSON, or BSON.
+collections对应于关系数据库中的表，是文档的集合；
+sql数据库需要normalization.（正交，减少冗余），显示的时候需要装配，关联查询；
+对象数据库可以很自然的建模，不需要有预先设计的schema；
+each document in a collection can have a completely different structure（但实际使用时相对统一），
+由应用代码而不是DB决定schema;
+entity-attribute-value pattern(关系型DB，可动态，复杂)
+ad hoc queries: 即席查询，都有；对只key查询；
+mongodb的关联查询要简单很多；
+Indexes in MongoDB are implemented as a B-tree data structure.
+WiredTiger：mongoDB 引擎；支持logstructured merge-trees (LSM)--->MySQL’s InnoDB(transactional storage engine)
+HBase是典型的key-value存储，不支持第二索引；mongoDB支持多个第二索引（每个collection 64个索引）；
+geospatial indexes：经纬度查询；
+MongoDB provides database replication via a topology known as a replica set. Replica
+sets distribute data across two or more machines for redundancy and automate
+failover in the event of server and network outages.（典型的云节点做法）
+primary node(读写);secondaries（读）.
+automated failover
+Write speed: 在一定时间内所做的大量的增删改；
+Durability：这些写操作的保证水平，与Write speed负相关；
+(写完50kb*100条后立即掉电，可恢复吗？DB类型，配置，硬件)-->平衡；
+transactional storage engine: 一方面写往事务日志，一方面写往内存池；
+journaling： mongoDB的日志；
+fire-and-forget：给服务器发一个写命令，不用等确认，
+异步，快，低价值数据（也可以配置成同步，高价值数据）；
+每100ms写一次journaling文件；
+关掉journaling写很危险，必须多数据中心同时写，或其它的备份措施；
+vertical scaling, or scaling up.
+horizontally, or scaling out
+sharding：类拟于openstack中的Ring;
+MongoDB is written in C++;
+GNU-AGPL: 开源，但对源码的修改必须公开；
+大约每3个月发布一次，偶数号为稳定版本；
+对象呈现：ruby hash, python dictionary, java Map...;
+组件：
+	mongod/mongodb.exe（进程）:主服务器，通过定制的binary协议经由socket接受命令；/data/db,c:\data\db;独立/集群（2+1）；
+	mongos：在config server mode的控制节点；
+	JavaScript shell: 直接操作
+	Database drivers(语言驱动，编程): officially supports :C, C++, C#, Erlang,Java, Node.js, JavaScript, Perl, PHP, Python, Scala, and Ruby
+	mongodump and mongorestore:备份与恢复，可热备；
+	mongoexport and mongoimport：导入导出；支持JSON, CSV(逗号), and TSV（空格）
+	mongosniff：查看对DB做了什么操作；
+	mongostat：查看每秒操作次数，虚拟内存数，连接数等；
+	mongotop：查看读写collection的时间；
+	mongoperf：帮助理解磁盘操作；
+	mongooplog：操作日志；
+	Bsondump：专Bson文件到json;
+MongoDB是key-value stores and relational databases的一个compromise；
+key-value stores, relational databases, and document databases
+缺点：不支持事务（需做两阶段提交），运维工具缺乏
+They opt for eventual consistency, which means that reads don’t
+necessarily reflect the latest write. But what users get in exchange for weaker consistency
+is the ability to write in the face of any one node’s failure.
+CouchDB data is stored in plain text as JSON；整节点作为副本；
+mongoDB适用于原型开发，非核心数据保存，不需要事务的数据保存，分析，日志，；
+限制
+	MongoDB should usually be run on 64-bit machines；
+	内存被按需自动分配，所以需要独占服务器；
+	工作集超过内存就会慢下来；
+	耗硬盘；
+	写查询对编程人员容易，对其它人难；
+	不好维护集群；
+	a piece of data is replicated only within its replica set
+	（本书没把不支持事务做为它的一个限制，为什么？）
+Databases(名字空间,缺省名test), collections, and documents
+use tutorial--》切换到使用tutorial的Database;
+creating the database isn’t required. Databases and collections are created only when documents are first inserted.
+db.users.insert({username: "smith"}) -->在users的collection中插入一个文档，此时创建database和collection；
+db.users.find() --》查users中的文档，返回内容，等价于db.users.find({})
+_id field：主键；
+db.users.count()--》有多少个文档；
+db.users.find({username: "jones"})--》find的参数是查询选择器（query predicate）,多个属性之间是and的关系；
+db.users.find({$and: [{ _id: ObjectId("552e458158cd52bcb257c324") },{ username: "smith" }] })
+$or
+
+
+	
+
+	
+	
+
+
+
+
+
+
+
+
