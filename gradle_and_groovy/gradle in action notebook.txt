@@ -1,3 +1,91 @@
 https://docs.gradle.org/current/dsl/index.html
+source code: https://github.com/bmuschko/gradle-in-action-source
+
+
+gradle从2012开始起步；
+build项目的工具链；
+polyglot builds: 项目由多种语言构成；
+A build：要么产生一个包，要么消费一个包；
+groovy语言体系庞大，不建议专门学习，了解基础即可,<groovy in action>有900多页；
+
+
+Part 1  Introducing Gradle
+chapcter 1. Introduction to project automation
+Ant and Maven:两个java项目自动化的传统工具；
+1.1 Life without project automation
+IDE环境不统一（编译器等）；代码没提交；URL没配对；
+当测试的时候，开发没事干；因为未预见的问题，部署慢；
+手工操作的事务多；
+1.2 Benefits of project automation
+以一种可重复和一致的方式交付软件；
+不要手工干涉，能自动化的就要自动化；
+可重复，可靠，可移植；
+shell不满足可移植的条件；
+自动构建触发时机：
+	当需要时；
+	当某事件出现时(比如check in)；
+	计划任务（特定间隔或特定时间）；
+一般过程：
+	编译源码；
+	拷贝class文件到目标目录；
+	打包；
+所有任务组成有向无环图；directed acyclic graph(DAG)（数据结构：节点->一个任务，有向边->表示任务依赖）
+
+BUILD FILE：包含了构建所需的配置信息，外部第三方库，指令信息；
+BUILD INPUTS AND OUTPUTS：一个任务可能会产生输出，也可能以另一个任务的输出作为输入；
+构建引擎：构建引擎把build file转化为内部模型；
+依赖管理器（DEPENDENCY MANAGER）：从外部环境(http server、本地文件系统)获得相应的依赖包；
+传递式依赖：依赖的metadata存入在repository中，自动处理依赖传递；
+
+1.5 Java build tools
+Ant：用于典型任务，提供预定义的任务，可自己扩展标签，写XML，没有依赖管理器（但可集成Ivy依赖管理器），；
+	project->target(依赖depends=，ant调用)->task(标签名，如javac,mkdir等标签，辅助信息通过签标属性)
+	对build文件结构没有要求，比如源在哪里，目的在哪里，灵活；
+	XML文件很长，不好维护，写控制结构if..else困难，没有标准项目结构，没有API，没有依赖管理Ivy.
+	
+Maven: 标准化的项目布局，统一的构建生命周期；约定大于配置；能生成java doc；使用插件扩展功能；
+标准布局：
+	src/main/java
+	src/main/resources
+	src/test/java
+	src/test/resources
+	target
+build file: pom.xml;
+标准构建生命周期(8步)：
+validate项目定义-》compile-》UT-》package-》集成测试IT-》verification checks-》本地归档-》远端归档
+有依赖管理：使用XML的依赖配置块申明，三维坐标（组织名，包名，版本号）
+Maven信息管理器下载依赖及依赖传递到本地(.m2 repository)，以便重用；
+外部默认为Maven Central；但也可以依赖其它的maven项目；
+缺点：
+	标准布局和标准生命周期对你的项目可能不适用；写插件难；
+下一代工具 gradle：
+	易表达，申明式，好维护；有标准，可定制；多个子项目集成构建(多项目构建)；依赖管理；可导入现存的ant/maven脚本；可扩展，高性能；
+
+chapter 2: Next-generation builds with Gradle	
+gradle使用groovy而不是XML;
+Groovy是JVM的一个替代语言（替代是指可以用 Groovy 在Java平台上进行 Java 编程），使用方式基本与使用 Java代码的方式相同，
+该语言特别适合与Spring的动态语言支持一起使用，设计时充分考虑了Java集成，这使 Groovy 与 Java 代码的互操作很容易。(百度百科)
+To get started with Gradle, all you need to bring to the table is a good understanding of the Java programming language.
+JVM-language build tools
+continuous delivery deployment pipeline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
 
 
