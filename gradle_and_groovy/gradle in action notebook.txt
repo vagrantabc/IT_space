@@ -1,3 +1,63 @@
 https://docs.gradle.org/current/dsl/index.html
 
 
+
+
+
+抛弃XML，引入动态语言groovy来定义构建逻辑；
+多语言项目：前端javascript，后端Java, Groovy, and Scala,C++;
+javacript:合并，混淆，压缩；
+后端：编译，打包，部署；
+Gant(on top of Ant)-->gradle;
+gradle的构建脚本是申明式的，可读的，清晰表达了意图；
+ThoughtWorks认可gradle和Rake(ruby系).
+groovy，hibernate,spring,VMware,grails采用gradle;
+公司：gradleware;
+依赖传递：External dependencies may have a reference to other libraries or resources. 
+优点：
+	具有表达力的语言和深度的API；
+		一个build脚本直接映射到一个project的实例；
+		gradle的接口查询：http://www.gradle.org/docs/current/javadoc/index.html.
+		gradle脚本的每个元素（project,Repository,Dependency,task）都有一个对应的java类，但有些类被groovy化，更为紧凑；
+		gradle在项目生命周期阶段暴露出hook,比如在test阶段失败时发邮件;
+		Gradle Build Language Reference Guide: http://www.gradle.org/docs/current/dsl/index.html.
+	Gradle is Groovy
+		groovy是gradle的DSL，不行就用普通java来写,但用groovy来写生产力有数量级的提升；
+		Groovy in Action, Second Edition
+	Flexible conventions
+		如果一切都缺省，只需要一行代码；
+		通过配置Convention properties来改变缺省；
+		gradle打破约定很容易；
+		gralde是一个武断的框架和一套不武断的工具集；
+	Robust and powerful dependency management
+		Ivy和maven不具有再现性，当repository中的组件更新时，本地catch不更新，gradle不会；
+		多模块项目支持；
+	Scalable builds
+		支持增量构建和局部构建（针对多模块项目），不需要clean；
+		多核CPU情况下，支持UT，IT，功能测试平行进行，即并行测试；
+		在daemon模式下运行，fork daemon以减少启动时间；
+	Effortless extendibility
+		写一个task就能实现定制，或在类定义中加定制逻辑，或调用gradle API写插件，写插件容易；
+	Integration with other build tools
+		与Ant, Maven, and Ivy共存；
+		可导入ant脚本，视其为gradle脚本(target=>task),gradle自带ant库，并有一个AntBuilder类；
+		与maven和Ivy仓库兼容, 它们的仓库可以视为gradle的仓库；可使用转换器把maven脚本翻译成gradle脚本；
+	Community-driven and company-backed	
+		github: pull-》代码提交
+		gradle的标准插件和社区插件；
+		gradle论坛：http://forums.gradle.org/gradle
+	其它功能
+		Gradle Wrapper：对另一个不同的项目，不需要安装新的gradle运行时,用于分享你的build,自动完成；
+		gradle CLI;可以用简写，camel的形式跑CLI（runMyAwesomeTask-》rMAT）；也提供UI;
+The bigger picture: continuous delivery
+	《Continuous Delivery: Reliable Software Releases through Build, Test, and Deployment Automation》	
+	 提交阶段：编译，UT、IT，代码分析，准备发布！！；
+	 自动化测试阶段：功能需求，非功能需求！！，部署，冒烟和可接受度测试，（UAT，英文User Acceptance Test的简写，也就是用户验收测试）；
+	 手工测试阶段：
+	 发布阶段；
+
+安装gradle:
+	先安装java；
+	下载gradle安装（不需要安装）：http://gradle.org/downloads，下zip文件，因其含有文档和样例源码；
+	GRADLE_HOME：到bin的父目录;设置path：%GRADLE_HOME%\bin ；gradle –v；OK
+	GRADLE_OPTS="-Xmx1024m"：加到bin下面的gradle.bat文件，搜GRADLE_OPTS；
