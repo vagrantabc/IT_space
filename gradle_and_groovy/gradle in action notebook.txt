@@ -61,3 +61,31 @@ The bigger picture: continuous delivery
 	下载gradle安装（不需要安装）：http://gradle.org/downloads，下zip文件，因其含有文档和样例源码；
 	GRADLE_HOME：到bin的父目录;设置path：%GRADLE_HOME%\bin ；gradle –v；OK
 	GRADLE_OPTS="-Xmx1024m"：加到bin下面的gradle.bat文件，搜GRADLE_OPTS；
+	
+Getting started with Gradle
+	缺省文件名：build.gradle，在命令行使用命令gradle时，系统会自动找这个文件；
+	task是原子级的，里面是action；
+	gradle –q helloWorld --->-q指quiet;
+	"<<"同名于doLast，但直接跟有任务名的后面；
+	dependsOn是task的一个方法；
+	每一个脚本都有一个ant属性，可以直接调用ant任务；//org.gradle.api.tasks.ant
+	动态任务中，groovy自动暴露出一个变量it，指示迭代索引；
+Using the Command line
+	Listing available tasks of a project
+	task "tasks"会反射脚本，列出所有可用任务；
+	任务组：一组任务；Helper任务组与开发无关；
+	最后那一个被执行的任务被称为“根任务”；
+	在一次build中，任务只被执行一次；
+	任务名缩写，但要保证缩写是唯一的;
+	-x: 不执行某个任务（smart exclusion）；
+	两个选项的单字母连在一起写，表示and关系；
+	gradle groupTherapy –h --->所有选项；
+	gradle –b test.gradle  --》不是默认脚本；
+	--offline  --》只检查本地catch;
+	gradle是一个jvm进程；
+	提供系统属性：–Dmyprop=myvalue；
+	提供项目属性：-Pmyprop=myvalue；
+	-q: 只打error消息；
+	--daemon： 以daemon方式启动,后续要重用也要带此参数，3个小时有效期；
+	gradle --stop: 停掉daemon;
+	详细说明：http://gradle.org/docs/current/userguide/gradle_daemon.html
