@@ -89,3 +89,10 @@ Using the Command line
 	--daemon： 以daemon方式启动,后续要重用也要带此参数，3个小时有效期；
 	gradle --stop: 停掉daemon;
 	详细说明：http://gradle.org/docs/current/userguide/gradle_daemon.html
+	
+chapter 3 Building a Gradle project by example	
+预定义的项目结构
+Gradle wrapper
+Introducing the case study：任务管理应用，没有UI，从控制台操作；
+gradle自带Java plugin；
+apply plugin: 'java'   --》使用java插件；	
