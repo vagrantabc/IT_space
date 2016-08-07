@@ -161,3 +161,53 @@ Gradle wrapper
 Introducing the case study：任务管理应用，没有UI，从控制台操作；
 gradle自带Java plugin；
 apply plugin: 'java'   --》使用java插件；	
+java插件会在src/main/java找源码；build.gradle与src平级；
+自动设置项目结构的插件：https://github.com/townsfolk/gradle-templates
+apply plugin: 'java'   --》使用java插件；-》多一个build任务-》compiles, runs your tests, and assembles
+gradle build；会执行12个任务；标记为UP-TO-DATE的任务被忽略（incremental build的功能）；
+完成后与src平级多一个build目录，这个层级称为root level；
+src的父目录名很重要，是项目的名称；
+输出的jar包在build/libs，jar包是项目名称；
+Gradle’s Build Language Reference：http://www.gradle.org/docs/current/dsl/
+查看可配置的属性：gradle properties
+java -jar build\libs\listing_03_04-todo-app-changing-properties-0.1.jar;
+DSL元素：sourceSets.main.java.scrDirs/sourceSets.test.java.srcDirs/buildDir这些DSL元素可以修改默认位置；
+two DSL configuration elements: repositories and dependencies；
+gradle要求必须要定义一个repository: repository{...}；
+mavenCentral()：menven的repository;
+定义依赖： dependencies{ 组标识，名字，版本号};
+比如：dependencies {compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'}
+查询依赖：http://search.maven.org/
+两个gradle插件：War and Jetty：  java 插件->war插件->jetty插件或tomcat插件； 
+自带war插件和jetty插件；
+apply plugin: 'war'
+Web应用的缺省目录：src/main/webapp（再下面是WEB-INF，css和jsp目录）；src/main/java；
+Servlet依赖：providedCompile，由运行时环境提供的编译，运行时环境指jetty或tomcat,所以这些依赖不打包在war中;
+runtime: 不需要编译，但运行时需要，会打在war中；
+dependencies closure：指 dependencies｛...｝
+查看一个war的目录结构：jar tf todo-webapp-0.1.war；
+webAppDirName=src/main/webapp --》webAppDirName=webfiles
+war {from 'static'}：把static目录下的东西加到war的根目录下；
+War plugin DSL guide
+jetty插件：apply plugin: 'jetty' ：jetty插件使用war的信息；
+运行任务名： gradle jettyRun；
+访问：http://localhost:8080/todo-webapp-jetty
+进程会一直运行，直到Ctrl + C终止；
+JRebel：可更新class文件，实现热部署；jetty插件可更新静态文件和jsp文件，无需重启容器；
+自定义：jettyRun {httpPort = 9090 contextPath = 'todo'}
+Gradle wrapper：create reliable and reproducible builds independent of the operating system, system setup, or installed Gradle version.
+wrapper作用：没有装gradle的，可以装；已装了的机器，可以保证版本一致；
+一般要求强制使用；
+加任务： task wrapper(type: Wrapper) {gradleVersion = '1.7'}
+执行：gradle wrapper
+gradlew：用于linux系统；
+gradlew.bat：用于widow系统 --》gradlew.bat jettyRun
+下载的gradle版本的位置：$HOME_DIR/.gradle/wrapper/dists
+task wrapper(type: Wrapper) {
+gradleVersion = '1.2'
+distributionUrl = 'http://myenterprise.com/gradle/dists' //从哪里下载gradle版本
+distributionPath = 'gradle-dists' //解包放在哪里，相对路径，相对于gradle的home目录
+}
+访问：http://localhost:8080/<项目名>
+Key to knowing your options are the Gradle DSL and API documentation!!!
+标准插件用户指南：http://www.gradle.org/docs/current/userguide/standard_plugins.html
