@@ -240,4 +240,42 @@ ORG_GRADLE_PROJECT_propertyName=someValue
 ******************************************************************
 I need to append some groovy grammar here.
 appendix B Groovy for Gradle users
+java-->DSL-->gradle
+使用方式：
+	直接使用groovy脚本代码；
+	编译成java字节码使用；
+推荐：Groovy in Action, Second Edition
+groovy的有意义的缺省：
+	尾部的分号是可选的；
+	类，构造函数和方法默认public;
+	方法体的最后一个表达式被返回，不需要写return;
+	groovy编译器自动加getter/setter;
+	通过这些getter/setter方法，类的属性可以用点记法访问；
+	使用==判断相等；
+def： 意为java.lang.Object的占位符（optional typing）；
+方法签名可以省略括号，这符合DSL习惯；
+string: 单引号，双引号，三引号；
+嵌入式变量或表达式(GStrings)：在双引号方式中，使用${};
+LISTS: [a,b,c] ==>java.util.ArrayList;
+<<  : 加新元素到list;
+MAPS: ['a': 2,b:4] ==>java.util.LinkedHashMap
+Named parameters: 
+Closures:类型是groovy.lang.Closure的代码块，类似于lambdas表达式，可以分配给变量，传给方法，或象方法一样调用；
+	隐式闭包参数：没有定义参数的闭包有一个隐式参数it可以访问，它指向调用此闭包的第一个参数，如没有则为null;
+	显示闭包参数：
+def incrementMajorProjectVersion = { ProjectVersion version ->
+    version.major++
+}
+incrementMajorProjectVersion2是变量名， ｛｝是闭包，'ProjectVersion version ->' 是显式闭包参数，参数类型通常不写，
+调用：
+	ProjectVersion projectVersion = new ProjectVersion(major: 1, minor: 10)
+	incrementMajorProjectVersion(projectVersion)
+闭包返回值：return,最后一句(可能是null);
+闭包作为方法参数：
+CLOSURE DELEGATION：
+	闭包是基于闭包委派来执行的，委派是闭包的owner;
+	如果在groovy script中写闭包，owner是groovy.lang.Script的实例；
+	闭包有一个隐式变量名：‘delegate’，指向owner，可以修改值；
+each
+Gradle comes with a DSL written in Groovy for modeling typical build concerns.
 ******************************************************************
