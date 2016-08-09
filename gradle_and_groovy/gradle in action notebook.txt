@@ -211,3 +211,33 @@ distributionPath = 'gradle-dists' //解包放在哪里，相对路径，相对�
 访问：http://localhost:8080/<项目名>
 Key to knowing your options are the Gradle DSL and API documentation!!!
 标准插件用户指南：http://www.gradle.org/docs/current/userguide/standard_plugins.html
+chapter 4 Build script essentials
+4.1 Building blocks
+gradle的构建块：projects, tasks, and properties.
+每一个build至少有一个project;project里面有一个或多个task;在project和task中，会暴露properties.
+一个project可以依赖另一个project；一个task可以依赖另一个task;
+domain-driven design (DDD)
+project:表示你试图build出来的组件,比如jar，或者你试图达到的目标，比如部署应用；
+启动build时，会基于build.gradle文件实例化org.gradle.api.Project（接口），用“project”变量名访问(显式或隐式调用)；
+project对象可以创建任务，加依赖和配置，应用插件和其它脚本，配置属性，所有功能都包括；
+task（org.gradle.api.Task，接口）: task的action和task的依赖；
+action: 一个原子操作；
+Project和Task有属性（properties）；
+在project的ex空间自定义属性，但访问可以用，也可以不用，第一次申请时必须用；
+project.ext.myProp = 'myValue'   《====》 ext {someOtherProp = 123}
+在文件中写脚本，就是在project空间下工作；
+<USER_HOME>/.gradle/gradle.properties或根目录的这个文件，只能有一个这个文件: 
+可以注入属性到所有项目的project对象；
+$someOtherProp  <<==>> project.someOtherProp, 两者等价，一个用于代码，一个用于字符串中；
+■ Project property via the –P command-line option
+■ System property via the –D command-line option
+■ Environment property following the pattern
+ORG_GRADLE_PROJECT_propertyName=someValue
+新创建任务task类型：org.gradle.api.DefaultTask是Task接口的标准实现;
+不是你写的任务，你也可以加自己的东西；
+在groovy的bean中，不需要写getter和setter方法，在生成字节码时会自动添加；
+
+******************************************************************
+I need to append some groovy grammar here.
+appendix B Groovy for Gradle users
+******************************************************************
