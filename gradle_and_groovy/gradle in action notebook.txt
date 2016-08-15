@@ -1,5 +1,6 @@
 https://docs.gradle.org/current/dsl/index.html
 source code: https://github.com/bmuschko/gradle-in-action-source
+<<<<<<< HEAD
 
 
 gradle从2012开始起步；
@@ -251,5 +252,284 @@ TaskContainer
 	
 
 
+=======
+>>>>>>> 92854340290779315db9eb3e1c5f0718755243fd
 
 
+gradle从2012开始起步；
+build项目的工具链；
+polyglot builds: 项目由多种语言构成；
+A build：要么产生一个包，要么消费一个包；
+groovy语言体系庞大，不建议专门学习，了解基础即可,<groovy in action>有900多页；
+
+
+Part 1  Introducing Gradle
+chapcter 1. Introduction to project automation
+Ant and Maven:两个java项目自动化的传统工具；
+1.1 Life without project automation
+IDE环境不统一（编译器等）；代码没提交；URL没配对；
+当测试的时候，开发没事干；因为未预见的问题，部署慢；
+手工操作的事务多；
+1.2 Benefits of project automation
+以一种可重复和一致的方式交付软件；
+不要手工干涉，能自动化的就要自动化；
+可重复，可靠，可移植；
+shell不满足可移植的条件；
+自动构建触发时机：
+	当需要时；
+	当某事件出现时(比如check in)；
+	计划任务（特定间隔或特定时间）；
+一般过程：
+	编译源码；
+	拷贝class文件到目标目录；
+	打包；
+所有任务组成有向无环图；directed acyclic graph(DAG)（数据结构：节点->一个任务，有向边->表示任务依赖）
+
+BUILD FILE：包含了构建所需的配置信息，外部第三方库，指令信息；
+BUILD INPUTS AND OUTPUTS：一个任务可能会产生输出，也可能以另一个任务的输出作为输入；
+构建引擎：构建引擎把build file转化为内部模型；
+依赖管理器（DEPENDENCY MANAGER）：从外部环境(http server、本地文件系统)获得相应的依赖包；
+传递式依赖：依赖的metadata存入在repository中，自动处理依赖传递；
+
+1.5 Java build tools
+Ant：用于典型任务，提供预定义的任务，可自己扩展标签，写XML，没有依赖管理器（但可集成Ivy依赖管理器），；
+	project->target(依赖depends=，ant调用)->task(标签名，如javac,mkdir等标签，辅助信息通过签标属性)
+	对build文件结构没有要求，比如源在哪里，目的在哪里，灵活；
+	XML文件很长，不好维护，写控制结构if..else困难，没有标准项目结构，没有API，没有依赖管理Ivy.
+	
+Maven: 标准化的项目布局，统一的构建生命周期；约定大于配置；能生成java doc；使用插件扩展功能；
+标准布局：
+	src/main/java
+	src/main/resources
+	src/test/java
+	src/test/resources
+	target
+build file: pom.xml;
+标准构建生命周期(8步)：
+validate项目定义-》compile-》UT-》package-》集成测试IT-》verification checks-》本地归档-》远端归档
+有依赖管理：使用XML的依赖配置块申明，三维坐标（组织名，包名，版本号）
+Maven信息管理器下载依赖及依赖传递到本地(.m2 repository)，以便重用；
+外部默认为Maven Central；但也可以依赖其它的maven项目；
+缺点：
+	标准布局和标准生命周期对你的项目可能不适用；写插件难；
+下一代工具 gradle：
+	易表达，申明式，好维护；有标准，可定制；多个子项目集成构建(多项目构建)；依赖管理；可导入现存的ant/maven脚本；可扩展，高性能；
+
+chapter 2: Next-generation builds with Gradle	
+gradle使用groovy而不是XML;
+Groovy是JVM的一个替代语言（替代是指可以用 Groovy 在Java平台上进行 Java 编程），使用方式基本与使用 Java代码的方式相同，
+该语言特别适合与Spring的动态语言支持一起使用，设计时充分考虑了Java集成，这使 Groovy 与 Java 代码的互操作很容易。(百度百科)
+To get started with Gradle, all you need to bring to the table is a good understanding of the Java programming language.
+JVM-language build tools
+continuous delivery deployment pipeline
+
+抛弃XML，引入动态语言groovy来定义构建逻辑；
+多语言项目：前端javascript，后端Java, Groovy, and Scala,C++;
+javacript:合并，混淆，压缩；
+后端：编译，打包，部署；
+Gant(on top of Ant)-->gradle;
+gradle的构建脚本是申明式的，可读的，清晰表达了意图；
+ThoughtWorks认可gradle和Rake(ruby系).
+groovy，hibernate,spring,VMware,grails采用gradle;
+公司：gradleware;
+依赖传递：External dependencies may have a reference to other libraries or resources. 
+优点：
+	具有表达力的语言和深度的API；
+		一个build脚本直接映射到一个project的实例；
+		gradle的接口查询：http://www.gradle.org/docs/current/javadoc/index.html.
+		gradle脚本的每个元素（project,Repository,Dependency,task）都有一个对应的java类，但有些类被groovy化，更为紧凑；
+		gradle在项目生命周期阶段暴露出hook,比如在test阶段失败时发邮件;
+		Gradle Build Language Reference Guide: http://www.gradle.org/docs/current/dsl/index.html.
+	Gradle is Groovy
+		groovy是gradle的DSL，不行就用普通java来写,但用groovy来写生产力有数量级的提升；
+		Groovy in Action, Second Edition
+	Flexible conventions
+		如果一切都缺省，只需要一行代码；
+		通过配置Convention properties来改变缺省；
+		gradle打破约定很容易；
+		gralde是一个武断的框架和一套不武断的工具集；
+	Robust and powerful dependency management
+		Ivy和maven不具有再现性，当repository中的组件更新时，本地catch不更新，gradle不会；
+		多模块项目支持；
+	Scalable builds
+		支持增量构建和局部构建（针对多模块项目），不需要clean；
+		多核CPU情况下，支持UT，IT，功能测试平行进行，即并行测试；
+		在daemon模式下运行，fork daemon以减少启动时间；
+	Effortless extendibility
+		写一个task就能实现定制，或在类定义中加定制逻辑，或调用gradle API写插件，写插件容易；
+	Integration with other build tools
+		与Ant, Maven, and Ivy共存；
+		可导入ant脚本，视其为gradle脚本(target=>task),gradle自带ant库，并有一个AntBuilder类；
+		与maven和Ivy仓库兼容, 它们的仓库可以视为gradle的仓库；可使用转换器把maven脚本翻译成gradle脚本；
+	Community-driven and company-backed	
+		github: pull-》代码提交
+		gradle的标准插件和社区插件；
+		gradle论坛：http://forums.gradle.org/gradle
+	其它功能
+		Gradle Wrapper：对另一个不同的项目，不需要安装新的gradle运行时,用于分享你的build,自动完成；
+		gradle CLI;可以用简写，camel的形式跑CLI（runMyAwesomeTask-》rMAT）；也提供UI;
+The bigger picture: continuous delivery
+	《Continuous Delivery: Reliable Software Releases through Build, Test, and Deployment Automation》	
+	 提交阶段：编译，UT、IT，代码分析，准备发布！！；
+	 自动化测试阶段：功能需求，非功能需求！！，部署，冒烟和可接受度测试，（UAT，英文User Acceptance Test的简写，也就是用户验收测试）；
+	 手工测试阶段：
+	 发布阶段；
+
+安装gradle:
+	先安装java；
+	下载gradle安装（不需要安装）：http://gradle.org/downloads，下zip文件，因其含有文档和样例源码；
+	GRADLE_HOME：到bin的父目录;设置path：%GRADLE_HOME%\bin ；gradle –v；OK
+	GRADLE_OPTS="-Xmx1024m"：加到bin下面的gradle.bat文件，搜GRADLE_OPTS；
+	
+Getting started with Gradle
+	缺省文件名：build.gradle，在命令行使用命令gradle时，系统会自动找这个文件；
+	task是原子级的，里面是action；
+	gradle –q helloWorld --->-q指quiet;
+	"<<"同名于doLast，但直接跟有任务名的后面；
+	dependsOn是task的一个方法；
+	每一个脚本都有一个ant属性，可以直接调用ant任务；//org.gradle.api.tasks.ant
+	动态任务中，groovy自动暴露出一个变量it，指示迭代索引；
+Using the Command line
+	Listing available tasks of a project
+	task "tasks"会反射脚本，列出所有可用任务；
+	任务组：一组任务；Helper任务组与开发无关；
+	最后那一个被执行的任务被称为“根任务”；
+	在一次build中，任务只被执行一次；
+	任务名缩写，但要保证缩写是唯一的;
+	-x: 不执行某个任务（smart exclusion）；
+	两个选项的单字母连在一起写，表示and关系；
+	gradle groupTherapy –h --->所有选项；
+	gradle –b test.gradle  --》不是默认脚本；
+	--offline  --》只检查本地catch;
+	gradle是一个jvm进程；
+	提供系统属性：–Dmyprop=myvalue；
+	提供项目属性：-Pmyprop=myvalue；
+	-q: 只打error消息；
+	--daemon： 以daemon方式启动,后续要重用也要带此参数，3个小时有效期；
+	gradle --stop: 停掉daemon;
+	详细说明：http://gradle.org/docs/current/userguide/gradle_daemon.html
+	
+chapter 3 Building a Gradle project by example	
+预定义的项目结构
+Gradle wrapper
+Introducing the case study：任务管理应用，没有UI，从控制台操作；
+gradle自带Java plugin；
+apply plugin: 'java'   --》使用java插件；	
+java插件会在src/main/java找源码；build.gradle与src平级；
+自动设置项目结构的插件：https://github.com/townsfolk/gradle-templates
+apply plugin: 'java'   --》使用java插件；-》多一个build任务-》compiles, runs your tests, and assembles
+gradle build；会执行12个任务；标记为UP-TO-DATE的任务被忽略（incremental build的功能）；
+完成后与src平级多一个build目录，这个层级称为root level；
+src的父目录名很重要，是项目的名称；
+输出的jar包在build/libs，jar包是项目名称；
+Gradle’s Build Language Reference：http://www.gradle.org/docs/current/dsl/
+查看可配置的属性：gradle properties
+java -jar build\libs\listing_03_04-todo-app-changing-properties-0.1.jar;
+DSL元素：sourceSets.main.java.scrDirs/sourceSets.test.java.srcDirs/buildDir这些DSL元素可以修改默认位置；
+two DSL configuration elements: repositories and dependencies；
+gradle要求必须要定义一个repository: repository{...}；
+mavenCentral()：menven的repository;
+定义依赖： dependencies{ 组标识，名字，版本号};
+比如：dependencies {compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'}
+查询依赖：http://search.maven.org/
+两个gradle插件：War and Jetty：  java 插件->war插件->jetty插件或tomcat插件； 
+自带war插件和jetty插件；
+apply plugin: 'war'
+Web应用的缺省目录：src/main/webapp（再下面是WEB-INF，css和jsp目录）；src/main/java；
+Servlet依赖：providedCompile，由运行时环境提供的编译，运行时环境指jetty或tomcat,所以这些依赖不打包在war中;
+runtime: 不需要编译，但运行时需要，会打在war中；
+dependencies closure：指 dependencies｛...｝
+查看一个war的目录结构：jar tf todo-webapp-0.1.war；
+webAppDirName=src/main/webapp --》webAppDirName=webfiles
+war {from 'static'}：把static目录下的东西加到war的根目录下；
+War plugin DSL guide
+jetty插件：apply plugin: 'jetty' ：jetty插件使用war的信息；
+运行任务名： gradle jettyRun；
+访问：http://localhost:8080/todo-webapp-jetty
+进程会一直运行，直到Ctrl + C终止；
+JRebel：可更新class文件，实现热部署；jetty插件可更新静态文件和jsp文件，无需重启容器；
+自定义：jettyRun {httpPort = 9090 contextPath = 'todo'}
+Gradle wrapper：create reliable and reproducible builds independent of the operating system, system setup, or installed Gradle version.
+wrapper作用：没有装gradle的，可以装；已装了的机器，可以保证版本一致；
+一般要求强制使用；
+加任务： task wrapper(type: Wrapper) {gradleVersion = '1.7'}
+执行：gradle wrapper
+gradlew：用于linux系统；
+gradlew.bat：用于widow系统 --》gradlew.bat jettyRun
+下载的gradle版本的位置：$HOME_DIR/.gradle/wrapper/dists
+task wrapper(type: Wrapper) {
+gradleVersion = '1.2'
+distributionUrl = 'http://myenterprise.com/gradle/dists' //从哪里下载gradle版本
+distributionPath = 'gradle-dists' //解包放在哪里，相对路径，相对于gradle的home目录
+}
+访问：http://localhost:8080/<项目名>
+Key to knowing your options are the Gradle DSL and API documentation!!!
+标准插件用户指南：http://www.gradle.org/docs/current/userguide/standard_plugins.html
+chapter 4 Build script essentials
+4.1 Building blocks
+gradle的构建块：projects, tasks, and properties.
+每一个build至少有一个project;project里面有一个或多个task;在project和task中，会暴露properties.
+一个project可以依赖另一个project；一个task可以依赖另一个task;
+domain-driven design (DDD)
+project:表示你试图build出来的组件,比如jar，或者你试图达到的目标，比如部署应用；
+启动build时，会基于build.gradle文件实例化org.gradle.api.Project（接口），用“project”变量名访问(显式或隐式调用)；
+project对象可以创建任务，加依赖和配置，应用插件和其它脚本，配置属性，所有功能都包括；
+task（org.gradle.api.Task，接口）: task的action和task的依赖；
+action: 一个原子操作；
+Project和Task有属性（properties）；
+在project的ex空间自定义属性，但访问可以用，也可以不用，第一次申请时必须用；
+project.ext.myProp = 'myValue'   《====》 ext {someOtherProp = 123}
+在文件中写脚本，就是在project空间下工作；
+<USER_HOME>/.gradle/gradle.properties或根目录的这个文件，只能有一个这个文件: 
+可以注入属性到所有项目的project对象；
+$someOtherProp  <<==>> project.someOtherProp, 两者等价，一个用于代码，一个用于字符串中；
+■ Project property via the –P command-line option
+■ System property via the –D command-line option
+■ Environment property following the pattern
+ORG_GRADLE_PROJECT_propertyName=someValue
+新创建任务task类型：org.gradle.api.DefaultTask是Task接口的标准实现;
+不是你写的任务，你也可以加自己的东西；
+在groovy的bean中，不需要写getter和setter方法，在生成字节码时会自动添加；
+
+******************************************************************
+I need to append some groovy grammar here.
+appendix B Groovy for Gradle users
+java-->DSL-->gradle
+使用方式：
+	直接使用groovy脚本代码；
+	编译成java字节码使用；
+推荐：Groovy in Action, Second Edition
+groovy的有意义的缺省：
+	尾部的分号是可选的；
+	类，构造函数和方法默认public;
+	方法体的最后一个表达式被返回，不需要写return;
+	groovy编译器自动加getter/setter;
+	通过这些getter/setter方法，类的属性可以用点记法访问；
+	使用==判断相等；
+def： 意为java.lang.Object的占位符（optional typing）；
+方法签名可以省略括号，这符合DSL习惯；
+string: 单引号，双引号，三引号；
+嵌入式变量或表达式(GStrings)：在双引号方式中，使用${};
+LISTS: [a,b,c] ==>java.util.ArrayList;
+<<  : 加新元素到list;
+MAPS: ['a': 2,b:4] ==>java.util.LinkedHashMap
+Named parameters: 
+Closures:类型是groovy.lang.Closure的代码块，类似于lambdas表达式，可以分配给变量，传给方法，或象方法一样调用；
+	隐式闭包参数：没有定义参数的闭包有一个隐式参数it可以访问，它指向调用此闭包的第一个参数，如没有则为null;
+	显示闭包参数：
+def incrementMajorProjectVersion = { ProjectVersion version ->
+    version.major++
+}
+incrementMajorProjectVersion2是变量名， ｛｝是闭包，'ProjectVersion version ->' 是显式闭包参数，参数类型通常不写，
+调用：
+	ProjectVersion projectVersion = new ProjectVersion(major: 1, minor: 10)
+	incrementMajorProjectVersion(projectVersion)
+闭包返回值：return,最后一句(可能是null);
+闭包作为方法参数：
+CLOSURE DELEGATION：
+	闭包是基于闭包委派来执行的，委派是闭包的owner;
+	如果在groovy script中写闭包，owner是groovy.lang.Script的实例；
+	闭包有一个隐式变量名：‘delegate’，指向owner，可以修改值；
+each
+Gradle comes with a DSL written in Groovy for modeling typical build concerns.
+******************************************************************

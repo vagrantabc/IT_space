@@ -1,0 +1,114 @@
+https://docs.gradle.org
+
+Chapter 1. Introduction
+1.1. About this user guide
+gradle用于 Java (JVM) world的世界；
+gradle基于 Apache Ivy做依赖管理,内置；
+在有向无环图中，箭头一端的先执行；
+groovy编译器；
+
+Chapter 2. Overview
+2.1. Features
+extensible Domain Specific Language (DSL) 元素based on Groovy；
+gradle可转Ant targets 到gradle task;也可以在build.xml中依赖gradle task；
+pom.xml --》（转换器）--》gradle script;
+gradle的设计是面向语方的，不是面向框架的；
+gradle提供一些标准的用例；
+gradle API也是groovy化的；
+Gradle Wrapper：使没有安装gradle的机器可以执行Gradle builds.
+licensed: ASL 
+因为它用于java世界，groovy近似于java，所以采用groovy; 由于java的局限性，不适合做build语言；
+Python, Groovy or Ruby适合，但groovy最接近java;
+
+Chapter 3. Installing Gradle
+要求jre1.6以上；
+gradle自带Groovy library;
+不需要安装，下载后解包，设置 GRADLE_HOME，指向解包目录，设置path,指向GRADLE_HOME/bin；
+gradle -v
+JVM options： GRADLE_OPTS（通常设内存选项） or JAVA_OPTS（方便多个环境变量共享，通常设一下代量）
+目前无法在CLI下设JVM options;
+
+Chapter 4. Using the Gradle Command-Line
+gradle命令字：发起一个build;
+4.1. Executing multiple tasks
+gradle compile test; 按顺序执行，任何一个task只执行一次；
+gradle dist -x test； 执行dist任务，排除掉test不执行；
+4.3. Continuing the build when a failure occurs
+缺省情况下，一旦任务失败，中止build； 
+ --continue ：一次build可以尽可能多的发现问题，如果一个任务的依赖都OK，这个任务就被执行；
+4.4. Task name abbreviation
+提供的任务名足够能识别就可以了，可以缩写骆驼字母，也可以提供前面几个字母；
+任务名通常首字母小写，以后每个单词头母大写；
+gradle d -->gradle dist --》gradle di;
+4.5. Selecting which build to execute
+gradle：在当前目录找gradle文件；-b选项使settings.gradle文件不被使用，
+$buildFile.name： build文件名；
+$buildFile.parentFile.name：父目录名；
+-p: project directory,在多模块项目中，使用-p代替-b.
+4.6. Forcing tasks to execute
+up to date:最新的，显示这些的是增量任务，表示本次不需要执行；
+gradle --rerun-tasks doIt: 强制执行，包括所有任务，不需要也要执行；
+Obtaining information about your build
+4.7. Obtaining information about your build
+通常使用项目报告插件；
+4.7.1. Listing projects
+gradle -q projects
+《build.gradle》：description = 'The shared API for the application'
+4.7.2. Listing tasks
+gradle -q tasks //只显示group中的任务
+设置：dists {
+			description = 'Builds the distribution'  //closure中,每一行最后没有标点符号
+			group = 'build'
+			}
+gradle -q tasks --all  //显示main组的任务及其依赖；
+4.7.3. Show task usage details
+gradle help --task someTask  --》 gradle -q help --task libs
+4.7.4. Listing project dependencies
+gradle dependencies --》gradle -q dependencies api:dependencies webapp:dependencies
+gradle -q api:dependencies --configuration testCompile  //任务testCompile的依赖
+gradle buildEnvironment;
+gradle dependencyInsight: 属help任务组；
+gradle -q webapp/*子项目*/:dependencyInsight --dependency groovy/*依赖*/ --configuration compile/*任务*/
+--dependency选项，--configuration选项；
+4.7.7. Listing project properties
+gradle -q api:properties
+4.7.8. Profiling a build
+--profile：记录build时间信息；
+4.8. Dry Run
+-m选项：哪些任务以什么顺序执行，但不被实际执行；
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+
+

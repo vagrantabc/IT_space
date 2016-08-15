@@ -1,0 +1,94 @@
+﻿《groovy in action 2nd》
+官网：http://groovy-lang.org/install.html
+Groovy enVironment Manager (GVM, http://gvmtool.net)：只有linux版本
+
+前言
+groove: n.非常愉快的经历;
+groovy是Java’s dynamic friend；
+Spock testing framework；
+ReGina是本书的缩写；
+domain-specific languages：DSL
+GDK：groovy开发包；
+quality-oriented
+代码下载：www.manning.com/GroovyinActionSecondEdition
+a professional software developer,architect, trainer, and consultant.
+
+Part 1 The Groovy language
+chacpter 1 Your way to Groovy
+Grails web application platform 和Spock testing facility都要用groovy.
+Meta Object Protocol(MOP)
+the compiler, interpreter, and shells
+发明人：James Strachan，java开发者在等晚点飞机时学习python时想到的。
+即要象python一样功能强大的动态语言，又要对java是友好的JVM语言。
+定位：java伴侣；（超级java？）
+Rhino is an open-source implementation of JavaScript written entirely in Java.
+java友好->动态能力-> Groovy, JavaScript (Rhino), Jython, and JRuby side by side
+comparison with Clojure, Scala, Kotlin, Ceylon, Fan, Nice, Newspeak, and Frege.
+（语言太它妈多了。。：（）
+groovy可以预编译成java字节码；
+groovy大部分都是java写的，一小部分是用groovy写的；
+groovy运行在JVM中；
+Groovy is only a new way of creating ordinary Java classes
+Groovy is Java with an additional JAR file as a dependency.
+Every Groovy type is a subtype of java.lang.Object.
+A Groovy date is a java.util.Date，可以完全当java.util.Date调用；
+groovyc compiles
+optional typing与dynamically typed的区别
+“可选类型”关键在于“可选”。开发人员可以为代码加上类型标注，但这些标注又对代码行为根本没有影响。
+write(int c), write(String str),and write(char[] buf). 使用optional typing可区分重载，使用动态类型办不到；
+drop-in replacement：java和groovy的class文件可以相互替换；
+
+import java.util.*; // Java
+Date today = new Date(); // Java
+today = new Date() // Groovy，三光政策：没有导入包，没有类型申请，没有分号；
+
+The Groovy solution is short, precise, and more compact than regular Java
+增强的方面：
+	language features, 
+	libraries specific to Groovy, 
+	additions to the existing Java standard classes (Groovy Development Kit, or GDK).
+Closures are blocks of code that can be treated as first-class objects
+Apache Software Foundation (ASF)管理groovy.
+using Java for code that needs to be optimized for runtime performance, and using
+Groovy for code that needs to be optimized for flexibility and readability.
+依赖只定义了之前要做什么，而不是以什么顺序做；
+Finalizer tasks：资源R在任务T执行完之后被释放，假设A依赖于R；
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
